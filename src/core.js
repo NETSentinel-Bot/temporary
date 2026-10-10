@@ -324,7 +324,7 @@ export function buildLink({
 
   if (proxyIP) {
     const separator = path.includes("?") ? "&" : "?";
-    path += `${separator}proxyip=${encodeURIComponent(proxyIP)}`;
+    path += `${separator}proxyip=${proxyIP}`;
   }
 
   return createVlessLink({
