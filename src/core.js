@@ -59,6 +59,180 @@ export async function safeFetch(url, options = {}, timeout = 4000) {
   }
 }
 
+
+const ZIZIFN_PROXY_POOL_URL =
+  "https://raw.githubusercontent.com/NiREvil/vless/main/sub/ProxyIP-for-zizifn.json";
+
+const ZIZIFN_PROXY_POOL_FRESH_TTL = 900;
+const ZIZIFN_PROXY_POOL_STALE_TTL = 86400;
+
+function createProxyPoolCacheKey(type) {
+  return new Request(`https://zizifn-proxy-pool.local/${type}`);
+}
+
+function isValidProxyPoolIp(ip) {
+  if (typeof ip !== "string" || !ip || ip.length > 45) return false;
+
+  const parts = ip.split(".");
+  if (parts.length === 4) {
+    return parts.every(
+      (part) =>
+        /^\d{1,3}$/.test(part) &&
+        Number(part) >= 0 &&
+        Number(part) <= 255,
+    );
+  }
+
+  if (!ip.includes(":") || !/^[\da-f:.]+$/i.test(ip)) return false;
+
+  try {
+    return new URL(`http://[${ip}]/`).hostname.length > 0;
+  } catch {
+    return false;
+  }
+}
+
+export function validateZizifnProxyPool(data) {
+  if (
+    !data ||
+    typeof data !== "object" ||
+    !Array.isArray(data.proxies) ||
+    !data.countries ||
+    typeof data.countries !== "object" ||
+    Array.isArray(data.countries) ||
+    !data.providers ||
+    typeof data.providers !== "object" ||
+    Array.isArray(data.providers)
+  ) {
+    throw new Error("Invalid ProxyIP dataset structure");
+  }
+
+  const proxies = data.proxies.filter(
+    (proxy) =>
+      proxy &&
+      isValidProxyPoolIp(proxy.ip) &&
+      Number.isInteger(proxy.port) &&
+      proxy.port >= 1 &&
+      proxy.port <= 65535 &&
+      typeof proxy.country === "string" &&
+      /^[A-Z]{2}$/.test(proxy.country),
+  );
+
+  if (proxies.length === 0) {
+    throw new Error("ProxyIP dataset contains no valid proxies");
+  }
+
+  const countries = Object.fromEntries(
+    Object.entries(data.countries).filter(
+      ([code, ips]) =>
+        /^[A-Z]{2}$/.test(code) &&
+        Array.isArray(ips) &&
+        ips.some(isValidProxyPoolIp),
+    ),
+  );
+
+  const providers = Object.fromEntries(
+    Object.entries(data.providers).filter(
+      ([name, ips]) =>
+        typeof name === "string" &&
+        Array.isArray(ips) &&
+        ips.some(isValidProxyPoolIp),
+    ),
+  );
+
+  return {
+    updated_at:
+      typeof data.updated_at === "string" ? data.updated_at : null,
+    proxies,
+    countries,
+    providers,
+  };
+}
+
+export async function fetchZizifnProxyPool(ctx) {
+  const cache = caches.default;
+  const freshKey = createProxyPoolCacheKey("fresh");
+  const staleKey = createProxyPoolCacheKey("stale");
+
+  try {
+    const fresh = await cache.match(freshKey);
+
+    if (fresh) {
+      return validateZizifnProxyPool(await fresh.json());
+    }
+  } catch (error) {
+    console.error("ProxyIP fresh cache read failed:", error);
+  }
+
+  try {
+    const response = await safeFetch(
+      ZIZIFN_PROXY_POOL_URL,
+      {
+        headers: {
+          Accept: "application/json",
+        },
+      },
+      8000,
+    );
+
+    if (!response.ok) {
+      throw new Error(`GitHub returned HTTP ${response.status}`);
+    }
+
+    const text = await response.text();
+
+    if (!text || text.length < 100) {
+      throw new Error("GitHub returned an unexpectedly small dataset");
+    }
+
+    const data = validateZizifnProxyPool(JSON.parse(text));
+
+    const freshResponse = new Response(text, {
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": `public, max-age=${ZIZIFN_PROXY_POOL_FRESH_TTL}`,
+      },
+    });
+
+    const staleResponse = new Response(text, {
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": `public, max-age=${ZIZIFN_PROXY_POOL_STALE_TTL}`,
+      },
+    });
+
+    const cacheWrite = Promise.all([
+      cache.put(freshKey, freshResponse),
+      cache.put(staleKey, staleResponse),
+    ]).catch((error) => {
+      console.error("ProxyIP cache write failed:", error);
+    });
+
+    if (ctx?.waitUntil) {
+      ctx.waitUntil(cacheWrite);
+    } else {
+      await cacheWrite;
+    }
+
+    return data;
+  } catch (error) {
+    console.error("ProxyIP GitHub fetch failed:", error);
+
+    try {
+      const stale = await cache.match(staleKey);
+
+      if (stale) {
+        console.warn("Using stale ProxyIP dataset");
+        return validateZizifnProxyPool(await stale.json());
+      }
+    } catch (staleError) {
+      console.error("ProxyIP stale cache read failed:", staleError);
+    }
+
+    throw new Error("ProxyIP dataset unavailable");
+  }
+}
+
 export function buildSettingsUrl(workerName) {
   return workerName
     ? `https://dash.cloudflare.com/?to=/:account/workers/services/view/${workerName}/production/settings`
