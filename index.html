@@ -898,6 +898,153 @@
         border-color: var(--borderColor-default);
       }
 
+      .proxy-pool-card {
+        background: #000;
+        border: 1px solid var(--borderColor-muted);
+        border-radius: 14px;
+      }
+
+      .proxy-pool-intro {
+        color: var(--fgColor-muted);
+        margin: 0 0 14px;
+      }
+
+      .proxy-pool-search {
+        width: 100%;
+        min-height: 42px;
+        padding: 10px 12px;
+        margin-bottom: 12px;
+        border: 1px solid var(--borderColor-muted);
+        border-radius: 10px;
+        background: var(--bgColor-inset);
+        color: var(--fgColor-default);
+        font: inherit;
+      }
+
+      .proxy-pool-country {
+        border: 1px solid var(--borderColor-muted);
+        border-radius: 10px;
+        margin-bottom: 8px;
+        overflow: hidden;
+      }
+
+      .proxy-pool-country summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 13px;
+        cursor: pointer;
+        list-style: none;
+      }
+
+      .proxy-pool-country summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .proxy-pool-country summary::before {
+        content: "⌄";
+        color: var(--fgColor-muted);
+        margin-right: auto;
+      }
+
+      .proxy-pool-country[open] summary::before {
+        content: "⌃";
+      }
+
+      .proxy-pool-country summary .country-name {
+        margin-left: auto;
+      }
+
+      .proxy-pool-count {
+        color: var(--fgColor-muted);
+        font-size: 12px;
+      }
+
+      .proxy-pool-list {
+        padding: 0 12px 12px;
+      }
+
+      .proxy-pool-proxy {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 10px 0;
+        border-top: 1px solid var(--borderColor-muted);
+      }
+
+      .proxy-pool-proxy input {
+        margin-top: 4px;
+        accent-color: var(--fgColor-accent);
+      }
+
+      .proxy-pool-proxy label {
+        min-width: 0;
+        flex: 1;
+        overflow-wrap: anywhere;
+        cursor: pointer;
+      }
+
+      .proxy-pool-meta {
+        display: block;
+        margin-top: 3px;
+        color: var(--fgColor-muted);
+        font-size: 11px;
+      }
+
+      .proxy-pool-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        margin-top: 12px;
+      }
+
+      .proxy-pool-status {
+        color: var(--fgColor-muted);
+        font-size: 12px;
+        margin: 10px 0 0;
+        overflow-wrap: anywhere;
+      }
+
+      .proxy-pool-output {
+        display: grid;
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .proxy-pool-result {
+        border: 1px solid var(--borderColor-muted);
+        border-radius: 10px;
+        padding: 10px;
+        min-width: 0;
+      }
+
+      .proxy-pool-result-title {
+        font-weight: 600;
+        margin-bottom: 8px;
+        overflow-wrap: anywhere;
+      }
+
+      .proxy-pool-result pre {
+        margin: 0 0 10px;
+        padding: 10px;
+        background: var(--bgColor-inset);
+        border-radius: 8px;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        font: 11px/1.6 var(--font-mono);
+      }
+
+      .proxy-pool-muted {
+        color: var(--fgColor-muted);
+        font-size: 12px;
+      }
+
+      .proxy-pool-actions .button {
+        min-height: 34px;
+      }
+
       @media (max-width: 640px) {
         .fragment-toolbar {
           grid-template-columns: 1fr;
@@ -1451,6 +1598,38 @@
             <span class="button-text">Import to Hiddify</span>
           </a>
         </div>
+      </div>
+
+      <div class="config-card proxy-pool-card" id="proxy-pool-card">
+        <div class="config-title">
+          <span>ProxyIPs</span>
+          <span id="proxy-pool-total" class="proxy-pool-count">Loading...</span>
+        </div>
+
+        <p class="proxy-pool-intro">
+          Select a country to explore available proxy IPs.
+          Choose up to 10 IPs to generate separate Xray configurations.
+        </p>
+
+        <input id="proxy-pool-search" class="proxy-pool-search" type="search" placeholder="Search countries..." aria-label="Search countries" autocomplete="off" />
+
+        <div id="proxy-pool-countries">
+          <p class="proxy-pool-muted">Loading ProxyIP dataset...</p>
+        </div>
+
+        <div class="proxy-pool-actions">
+          <span id="proxy-pool-selected" class="proxy-pool-count">0 selected</span>
+          <button id="proxy-pool-generate" class="button" type="button" disabled>
+            Generate Configs
+          </button>
+          <button id="proxy-pool-clear" class="button" type="button">
+            Clear Selection
+          </button>
+        </div>
+
+        <p id="proxy-pool-status" class="proxy-pool-status" role="status" aria-live="polite"></p>
+
+        <div id="proxy-pool-output" class="proxy-pool-output"></div>
       </div>
 
       <div class="config-card fragment-builder">
