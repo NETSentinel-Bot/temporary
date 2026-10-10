@@ -307,14 +307,32 @@ export function createVlessLink({
   return `${CONST.VLESS_PROTOCOL}://${userID}@${address}:${port}?${params.toString()}#${encodeURIComponent(name)}`;
 }
 
-export function buildLink({ core, proto, userID, hostName, address, port, tag, enhanced = false }) {
+
+export function buildLink({
+  core,
+  proto,
+  userID,
+  hostName,
+  address,
+  port,
+  tag,
+  enhanced = false,
+  proxyIP,
+}) {
   const p = CORE_PRESETS[core][proto];
+  let path = p.path();
+
+  if (proxyIP) {
+    const separator = path.includes("?") ? "&" : "?";
+    path += `${separator}proxyip=${encodeURIComponent(proxyIP)}`;
+  }
+
   return createVlessLink({
     userID,
     address,
     port,
     host: hostName,
-    path: p.path(),
+    path,
     security: p.security,
     sni: p.security === "tls" ? hostName : undefined,
     fp: enhanced && p.security === "tls" ? "unsafe" : p.fp,
