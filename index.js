@@ -33,16 +33,29 @@ export default {
     };
 
     const report = Object.entries(checks)
-      .map(([name, value]) => {
-        return `${typeof value === "undefined" ? "FAIL" : "OK"} ${name}: ${typeof value}`;
-      })
+      .map(([name, value]) => `${typeof value === "undefined" ? "FAIL" : "OK"} ${name}: ${typeof value}`)
       .join("\n");
 
-    return new Response(report, {
-      headers: {
-        "content-type": "text/plain; charset=utf-8",
-        "cache-control": "no-store",
-      },
-    });
+    try {
+      await init(wasm);
+
+      return new Response(`${report}\n\nOK WASM initialization completed`, {
+        headers: {
+          "content-type": "text/plain; charset=utf-8",
+          "cache-control": "no-store",
+        },
+      });
+    } catch (error) {
+      return new Response(
+        `${report}\n\nFAIL WASM initialization\n${error?.stack || error?.message || String(error)}`,
+        {
+          status: 500,
+          headers: {
+            "content-type": "text/plain; charset=utf-8",
+            "cache-control": "no-store",
+          },
+        },
+      );
+    }
   },
 };
