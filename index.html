@@ -2428,6 +2428,236 @@
           });
         });
       });
+      document.addEventListener("DOMContentLoaded", () => {
+        const card = document.getElementById("proxy-pool-card");
+        if (!card) return;
+        const countriesElement = document.getElementById("proxy-pool-countries");
+        const searchInput = document.getElementById("proxy-pool-search");
+        const totalElement = document.getElementById("proxy-pool-total");
+        const selectedElement = document.getElementById("proxy-pool-selected");
+        const generateButton = document.getElementById("proxy-pool-generate");
+        const clearButton = document.getElementById("proxy-pool-clear");
+        const statusElement = document.getElementById("proxy-pool-status");
+        const outputElement = document.getElementById("proxy-pool-output");
+        const selected = new Map();
+        const countryNames = new Intl.DisplayNames(["en"], {
+          type: "region"
+        });
+        let countryData = [];
+        let generating = false;
+        const escapeHTML = (value) =>
+          String(value).replace(/[&<>"']/g, (char) => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;",
+          })[char]);
+        const countryName = (code) => {
+          try {
+            return countryNames.of(code) || code;
+          } catch {
+            return code;
+          }
+        };
+        const countryFlag = (code) =>
+          /^[A-Z]{2}$/.test(code) ?
+          String.fromCodePoint(...[...code].map((char) => 127397 + char.charCodeAt(0))) :
+          "";
+        const proxyKey = (proxy) => `${proxy.ip}:${proxy.port}`;
+
+        function updateSelectionUI() {
+          selectedElement.textContent = `${selected.size} selected`;
+          generateButton.disabled = generating || selected.size === 0;
+          clearButton.disabled = generating || selected.size === 0;
+          card.querySelectorAll('input[data-proxy]').forEach((input) => {
+            const checked = selected.has(input.dataset.proxy);
+            input.checked = checked;
+            input.disabled = generating || (!checked && selected.size >= 10);
+          });
+        }
+
+        function renderCountries() {
+          const query = searchInput.value.trim().toLowerCase();
+          const filtered = countryData.filter(({
+              code
+            }) =>
+            countryName(code).toLowerCase().includes(query) ||
+            code.toLowerCase().includes(query)
+          );
+          if (!filtered.length) {
+            countriesElement.innerHTML =
+              '<p class="proxy-pool-muted">No matching countries found.</p>';
+            return;
+          }
+          countriesElement.innerHTML = filtered.map(({
+            code,
+            count
+          }) => `
+      <details class="proxy-pool-country" data-country="${escapeHTML(code)}">
+        <summary>
+          <span class="country-name">${escapeHTML(countryName(code))}</span>
+          <span>${countryFlag(code)}</span>
+          <span class="proxy-pool-count">${count} IPs</span>
+        </summary>
+        <div class="proxy-pool-list">
+          <p class="proxy-pool-muted">Loading proxies...</p>
+        </div>
+      </details>
+    `).join("");
+          countriesElement.querySelectorAll("details[data-country]").forEach((details) => {
+            details.addEventListener("toggle", async () => {
+              if (!details.open || details.dataset.loaded === "true") return;
+              const list = details.querySelector(".proxy-pool-list");
+              const code = details.dataset.country;
+              try {
+                const response = await fetch(
+                  `/proxyip-pool?country=${encodeURIComponent(code)}`
+                );
+                const data = await response.json();
+                if (!response.ok) {
+                  throw new Error(data.error || "Unable to load proxies");
+                }
+                list.innerHTML = data.proxies.map((proxy) => {
+                  const key = proxyKey(proxy);
+                  const checked = selected.has(key);
+                  return `
+              <div class="proxy-pool-proxy">
+                <input
+                  type="checkbox"
+                  id="proxy-${escapeHTML(code)}-${escapeHTML(proxy.ip)}-${proxy.port}"
+                  data-proxy="${escapeHTML(key)}"
+                  ${checked ? "checked" : ""}
+                  ${!checked && selected.size >= 10 ? "disabled" : ""}
+                />
+                <label for="proxy-${escapeHTML(code)}-${escapeHTML(proxy.ip)}-${proxy.port}">
+                  ${escapeHTML(key)}
+                  <span class="proxy-pool-meta">
+                    ${escapeHTML(proxy.isp)}
+                    ${proxy.city ? ` · ${escapeHTML(proxy.city)}` : ""}
+                    ${proxy.risk ? ` · Risk: ${escapeHTML(proxy.risk)}` : ""}
+                  </span>
+                </label>
+              </div>
+            `;
+                }).join("") || '<p class="proxy-pool-muted">No proxies available.</p>';
+                details.dataset.loaded = "true";
+                updateSelectionUI();
+              } catch (error) {
+                list.textContent = error.message || "Unable to load proxies.";
+              }
+            });
+          });
+        }
+        countriesElement.addEventListener("change", (event) => {
+          const input = event.target.closest("input[data-proxy]");
+          if (!input || generating) return;
+          const key = input.dataset.proxy;
+          if (input.checked) {
+            if (selected.size >= 10) {
+              input.checked = false;
+              statusElement.textContent = "You can select up to 10 ProxyIPs.";
+              return;
+            }
+            selected.set(key, key);
+          } else {
+            selected.delete(key);
+          }
+          statusElement.textContent = "";
+          updateSelectionUI();
+        });
+        searchInput.addEventListener("input", renderCountries);
+        clearButton.addEventListener("click", () => {
+          selected.clear();
+          outputElement.replaceChildren();
+          statusElement.textContent = "";
+          updateSelectionUI();
+        });
+        generateButton.addEventListener("click", async () => {
+          if (generating || selected.size === 0) return;
+          generating = true;
+          outputElement.replaceChildren();
+          statusElement.textContent = "Generating configurations...";
+          updateSelectionUI();
+          try {
+            const response = await fetch("/proxyip-configs", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                selected: [...selected.keys()]
+              }),
+            });
+            const data = await response.json();
+            if (!response.ok) {
+              throw new Error(data.error || "Configuration generation failed");
+            }
+            data.configs.forEach((item, index) => {
+              const result = document.createElement("div");
+              result.className = "proxy-pool-result";
+              const title = document.createElement("div");
+              title.className = "proxy-pool-result-title";
+              title.textContent =
+                `${countryFlag(item.country)} ${countryName(item.country)} · ${item.proxyIP}`;
+              const pre = document.createElement("pre");
+              pre.textContent = item.config;
+              const copyButton = document.createElement("button");
+              copyButton.type = "button";
+              copyButton.className = "button";
+              copyButton.textContent = "Copy Config";
+              copyButton.addEventListener("click", async () => {
+                try {
+                  await navigator.clipboard.writeText(item.config);
+                  copyButton.textContent = "Copied";
+                  setTimeout(() => {
+                    copyButton.textContent = "Copy Config";
+                  }, 1500);
+                } catch {
+                  statusElement.textContent = "Clipboard access failed. Select and copy the configuration manually.";
+                }
+              });
+              result.append(title, pre, copyButton);
+              outputElement.appendChild(result);
+            });
+            statusElement.textContent =
+              `${data.count} separate configuration(s) generated.`;
+            outputElement.scrollIntoView({
+              behavior: "smooth",
+              block: "nearest"
+            });
+          } catch (error) {
+            statusElement.textContent =
+              error.message || "Unable to generate configurations.";
+          } finally {
+            generating = false;
+            updateSelectionUI();
+          }
+        });
+        async function loadCountryList() {
+          try {
+            const response = await fetch("/proxyip-pool");
+            const data = await response.json();
+            if (!response.ok) {
+              throw new Error(data.error || "Unable to load ProxyIP dataset");
+            }
+            countryData = data.countries || [];
+            totalElement.textContent = `${data.total || 0} IPs`;
+            if (data.updated_at) {
+              statusElement.textContent =
+                `Dataset updated: ${new Date(data.updated_at).toLocaleString()}`;
+            }
+            renderCountries();
+            updateSelectionUI();
+          } catch (error) {
+            countriesElement.textContent =
+              "ProxyIP dataset is temporarily unavailable.";
+            statusElement.textContent =
+              error.message || "Unable to load ProxyIP dataset.";
+          }
+        }
+        loadCountryList();
+      });
     </script>
   </body>
 
