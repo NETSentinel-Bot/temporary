@@ -8,6 +8,8 @@ import {
   handleIpSubscription,
   handleMyConnection,
   handleResolveDomain,
+  handleProxyIpPool,
+  handleProxyIpConfigs,
 } from "./src/routes.js";
 
 let wasmReady = null;
@@ -91,6 +93,8 @@ export default {
       }
 
       if (url.pathname === "/resolve-domain") return handleResolveDomain(request);
+      if (url.pathname === "/proxyip-pool") return handleProxyIpPool(request, ctx);
+      if (url.pathname === "/proxyip-configs") return handleProxyIpConfigs(request, cfg.userID, url.hostname, ctx);
       if (url.pathname === "/my-connection") return handleMyConnection(request, env, ctx);
       if (url.pathname.startsWith(`/xray-enhanced/${cfg.userID}`))
         return handleIpSubscription(request, "xray", cfg.userID, url.hostname, ctx, true);
