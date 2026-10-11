@@ -344,6 +344,71 @@ export async function handleProxyIpConfigs(request, userID, hostName, ctx) {
 }
 
 
+
+export async function handlePanelData(userID, hostName, proxyAddress, workerName) {
+  const dream = buildLink({
+    core: "xray",
+    proto: "tls",
+    userID,
+    hostName,
+    address: hostName,
+    port: 443,
+    tag: `${hostName}-Xray`,
+  });
+
+  const freedom = buildLink({
+    core: "sb",
+    proto: "tls",
+    userID,
+    hostName,
+    address: hostName,
+    port: 443,
+    tag: `${hostName}-Singbox`,
+  });
+
+  const pattng = buildLink({
+    core: "xray",
+    proto: "tls",
+    userID,
+    hostName,
+    address: hostName,
+    port: 443,
+    tag: `${hostName}-PTN`,
+    enhanced: true,
+  });
+
+  const settingsUrl = buildSettingsUrl(workerName);
+  const workerLabel = hostName.split(".")[0] || "INDEX";
+  const encodedSubName = encodeURIComponent(workerLabel);
+
+  const subXrayUrlH = `https://${hostName}/xray/${userID}?name=${encodedSubName}`;
+  const subXrayUrlV = `https://${hostName}/xray/${userID}#${encodedSubName}`;
+  const subXrayUrlVEnhanced = `https://${hostName}/xray-enhanced/${userID}#${encodedSubName}`;
+  const subClashUrl = `https://${hostName}/clash/${userID}?name=${encodedSubName}`;
+  const subSbUrl = `https://${hostName}/sb/${userID}?name=${encodedSubName}`;
+
+  return new Response(
+    JSON.stringify({
+      proxyAddress,
+      configDream: dream,
+      configFreedom: freedom,
+      configPattng: pattng,
+      urlWorkerSettings: settingsUrl,
+      urlV2rayngEnhanced: `${SENS.v2rayng()}${subXrayUrlVEnhanced}`,
+      urlV2rayng: `${SENS.v2rayng()}${subXrayUrlV}`,
+      urlClash: `${SENS.clash()}${encodeURIComponent(subClashUrl)}`,
+      urlHiddify: `${SENS.hiddify()}${encodeURIComponent(subXrayUrlH)}`,
+      urlExclave: `${SENS.exclave()}${encodeURIComponent(subSbUrl)}&name=${encodedSubName}`,
+    }),
+    {
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Cache-Control": "no-store",
+      },
+    },
+  );
+}
+
 export async function handleConfigPage(userID, hostName, proxyAddress, workerName) {
   const dream = buildLink({
     core: "xray",
