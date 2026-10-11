@@ -1,120 +1,72 @@
-import init from "./pkg/zr_wasm.js";
-import wasm from "./pkg/zr_wasm_bg.wasm";
-import { handleClashConfig } from "./src/clash.js";
-import { ProtocolOverWSHandler } from "./src/network.js";
-import { Config, buildSettingsUrl } from "./src/core.js";
-import {
-  handleConfigPage,
-  handleIpSubscription,
-  handleMyConnection,
-  handleResolveDomain,
-  handleProxyIpPool,
-  handleProxyIpConfigs,
-} from "./src/routes.js";
-
-let wasmReady = null;
-function ensureWasm() {
-  if (!wasmReady) wasmReady = init(wasm);
-  return wasmReady;
-}
-
-function notFoundPage(hostName, workerName) {
-  const settingsUrl = buildSettingsUrl(workerName);
-
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Not Found</title>
-<style>
-  body {
-    background: #0d1117;
-    color: #c9d1d9;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    margin: 0;
-    text-align: center;
-    padding: 24px;
-  }
-  .box { max-width: 480px; }
-  h1 { color: #966600; font-size: 22px; margin-bottom: 12px; }
-  p { line-height: 1.6; color: #8b949e; }
-  code {
-    background: #161b22;
-    border: 1px solid #30363d;
-    color: #966600;
-    padding: 2px 6px;
-    border-radius: 4px;
-  }
-  a.btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 16px;
-    background: #161b22;
-    border: 1px solid #966600;
-    border-radius: 8px;
-    color: #966600;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 14px;
-    margin-top: 20px;
-  }
-</style>
-</head>
-<body>
-  <div class="box">
-    <h1>No UUID found in this URL</h1>
-    <p>This worker needs a valid UUID in the path to know who you are.</p>
-    <p>Try visiting <code>https://${hostName}/&lt;your-uuid&gt;</code></p>
-    <a class="btn" href="${settingsUrl}" target="_blank" rel="noopener noreferrer">🔑 Find your UUID on Cloudflare</a>
-  </div>
-</body>
-</html>`;
-}
+import { Config, buildLink, buildSettingsUrl, SENS } from "./src/core.js";
+import { handleConfigPage } from "./src/routes.js";
 
 export default {
-  async fetch(request, env, ctx) {
+  async fetch(request, env) {
+    const stage = (name, data = {}) =>
+      new Response(JSON.stringify({ stage: name, ...data }, null, 2), {
+        headers: {
+          "content-type": "application/json; charset=utf-8",
+          "cache-control": "no-store",
+        },
+      });
+
     try {
       const cfg = Config.fromEnv(env);
       const url = new URL(request.url);
-      const upgradeHeader = request.headers.get("Upgrade");
 
-      if (upgradeHeader && upgradeHeader.toLowerCase() === "websocket") {
-        await ensureWasm();
-        return ProtocolOverWSHandler(request, {
-          userID: cfg.userID,
-          proxyPool: cfg.proxyPool,
+      if (!url.pathname.startsWith(`/${cfg.userID}`)) {
+        return stage("config-ok", {
+          pathname: url.pathname,
+          workerName: cfg.workerName,
         });
       }
 
-      if (url.pathname === "/resolve-domain") return handleResolveDomain(request);
-      if (url.pathname === "/proxyip-pool") return handleProxyIpPool(request, ctx);
-      if (url.pathname === "/proxyip-configs") return handleProxyIpConfigs(request, cfg.userID, url.hostname, ctx);
-      if (url.pathname === "/my-connection") return handleMyConnection(request, env, ctx);
-      if (url.pathname.startsWith(`/xray-enhanced/${cfg.userID}`))
-        return handleIpSubscription(request, "xray", cfg.userID, url.hostname, ctx, true);
-      if (url.pathname.startsWith(`/xray/${cfg.userID}`))
-        return handleIpSubscription(request, "xray", cfg.userID, url.hostname, ctx, false);
-      if (url.pathname.startsWith(`/sb/${cfg.userID}`))
-        return handleIpSubscription(request, "sb", cfg.userID, url.hostname, ctx);
-      if (url.pathname.startsWith(`/clash/${cfg.userID}`))
-        return handleClashConfig(request, cfg.userID, url.hostname, ctx);
-      if (url.pathname.startsWith(`/${cfg.userID}`))
-        return handleConfigPage(cfg.userID, url.hostname, cfg.proxyAddress, cfg.workerName);
+      const common = {
+        userID: cfg.userID,
+        hostName: url.hostname,
+        address: url.hostname,
+        port: 443,
+      };
 
-      return new Response(notFoundPage(url.hostname, cfg.workerName), {
-        status: 404,
-        headers: { "Content-Type": "text/html; charset=utf-8" },
+      const dream = buildLink({
+        ...common,
+        core: "xray",
+        proto: "tls",
+        tag: `${url.hostname}-Xray`,
       });
-    } catch (err) {
-      return new Response(`Worker Logic Error: ${err.message}\n${err.stack}`, {
-        status: 500,
-        headers: { "Content-Type": "text/plain" },
+
+      const freedom = buildLink({
+        ...common,
+        core: "sb",
+        proto: "tls",
+        tag: `${url.hostname}-Singbox`,
+      });
+
+      const pattng = buildLink({
+        ...common,
+        core: "xray",
+        proto: "tls",
+        tag: `${url.hostname}-PTN`,
+        enhanced: true,
+      });
+
+      const settingsUrl = buildSettingsUrl(cfg.workerName);
+
+      return stage("links-ok", {
+        dreamLength: dream.length,
+        freedomLength: freedom.length,
+        pattngLength: pattng.length,
+        settingsUrl,
+        hasV2rayng: Boolean(SENS.v2rayng()),
+        hasClash: Boolean(SENS.clash()),
+        hasHiddify: Boolean(SENS.hiddify()),
+        hasExclave: Boolean(SENS.exclave()),
+      });
+    } catch (error) {
+      return stage("caught-error", {
+        message: error?.message || String(error),
+        stack: error?.stack || null,
       });
     }
   },
