@@ -5,7 +5,6 @@ import { ProtocolOverWSHandler } from "./src/network.js";
 import { Config, buildSettingsUrl } from "./src/core.js";
 import {
   handleConfigPage,
-  handlePanelData,
   handleIpSubscription,
   handleMyConnection,
   handleResolveDomain,
@@ -93,94 +92,20 @@ export default {
         });
       }
 
-      const corsHeaders = {
-        "Access-Control-Allow-Origin": "https://netsentinel-bot.github.io",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Max-Age": "86400",
-        Vary: "Origin",
-      };
-
-      const apiPaths = [
-        "/panel-data",
-        "/resolve-domain",
-        "/proxyip-pool",
-        "/proxyip-configs",
-        "/my-connection",
-      ];
-
-      if (request.method === "OPTIONS" && apiPaths.includes(url.pathname)) {
-        return new Response(null, {
-          status: 204,
-          headers: corsHeaders,
-        });
-      }
-
-      const withCors = async (response) => {
-        const body = await response.arrayBuffer();
-        const headers = new Headers(response.headers);
-
-        for (const [key, value] of Object.entries(corsHeaders)) {
-          headers.set(key, value);
-        }
-
-        return new Response(body, {
-          status: response.status,
-          statusText: response.statusText,
-          headers,
-        });
-      };
-
-      if (url.pathname === "/panel-data") {
-        if (url.searchParams.get("uuid") !== cfg.userID) {
-          return withCors(new Response("Not found", { status: 404 }));
-        }
-
-        return withCors(
-          await handlePanelData(cfg.userID, url.hostname, cfg.proxyAddress, cfg.workerName),
-        );
-      }
-
-      if (url.pathname === "/resolve-domain") {
-        return withCors(await handleResolveDomain(request));
-      }
-
-      if (url.pathname === "/proxyip-pool") {
-        return withCors(await handleProxyIpPool(request, ctx));
-      }
-
-      if (url.pathname === "/proxyip-configs") {
-        return withCors(await handleProxyIpConfigs(request, cfg.userID, url.hostname, ctx));
-      }
-
-      if (url.pathname === "/my-connection") {
-        return withCors(await handleMyConnection(request, env, ctx));
-      }
-
-      if (url.pathname.startsWith(`/xray-enhanced/${cfg.userID}`)) {
+      if (url.pathname === "/resolve-domain") return handleResolveDomain(request);
+      if (url.pathname === "/proxyip-pool") return handleProxyIpPool(request, ctx);
+      if (url.pathname === "/proxyip-configs") return handleProxyIpConfigs(request, cfg.userID, url.hostname, ctx);
+      if (url.pathname === "/my-connection") return handleMyConnection(request, env, ctx);
+      if (url.pathname.startsWith(`/xray-enhanced/${cfg.userID}`))
         return handleIpSubscription(request, "xray", cfg.userID, url.hostname, ctx, true);
-      }
-
-      if (url.pathname.startsWith(`/xray/${cfg.userID}`)) {
+      if (url.pathname.startsWith(`/xray/${cfg.userID}`))
         return handleIpSubscription(request, "xray", cfg.userID, url.hostname, ctx, false);
-      }
-
-      if (url.pathname.startsWith(`/sb/${cfg.userID}`)) {
+      if (url.pathname.startsWith(`/sb/${cfg.userID}`))
         return handleIpSubscription(request, "sb", cfg.userID, url.hostname, ctx);
-      }
-
-      if (url.pathname.startsWith(`/clash/${cfg.userID}`)) {
+      if (url.pathname.startsWith(`/clash/${cfg.userID}`))
         return handleClashConfig(request, cfg.userID, url.hostname, ctx);
-      }
-
-      if (url.pathname === `/${cfg.userID}` || url.pathname === `/${cfg.userID}/`) {
-        const panelUrl = new URL("https://netsentinel-bot.github.io/temporary/");
-
-        panelUrl.searchParams.set("uuid", cfg.userID);
-        panelUrl.searchParams.set("worker", url.origin);
-
-        return Response.redirect(panelUrl.toString(), 302);
-      }
+      if (url.pathname.startsWith(`/${cfg.userID}`))
+        return handleConfigPage(cfg.userID, url.hostname, cfg.proxyAddress, cfg.workerName);
 
       return new Response(notFoundPage(url.hostname, cfg.workerName), {
         status: 404,
