@@ -6,17 +6,17 @@
 
 import { connect } from 'cloudflare:sockets';
 
-let subPath = 'link';     // 节点订阅路径,不修改将使用uuid作为订阅路径
-let password = '123456';  // 主页密码,建议修改或添加 PASSWORD环境变量
-let proxyIP = 'proxy.xxxxxxxx.tk:50001';  // proxyIP 格式：ip、域名、ip:port、域名:port等,没填写port，默认使用443
-let yourUUID = '5dc15e15-f285-4a9d-959b-0e4fbdd77b63'; // UUID,建议修改或添加环境便量
-let disabletro = false;  // 是否关闭trojan, 设置为true时关闭，false开启 
+let subPath = 'link';
+let password = '123456';
+let proxyIP = 'di.nscl.ir:443';
+let yourUUID = 'be0ff9df-1468-41a0-8865-796d1c6800db';
+let disabletro = false;
 
 // CDN 
-let cfip = [ // 格式:优选域名:端口#备注名称、优选IP:端口#备注名称、[ipv6优选]:端口#备注名称、优选域名#备注 
-    'mfa.gov.ua#SG', 'saas.sin.fan#HK', 'store.ubi.com#JP','cf.130519.xyz#KR','cf.008500.xyz#HK', 
-    'cf.090227.xyz#SG', 'cf.877774.xyz#HK','cdns.doon.eu.org#JP','sub.danfeng.eu.org#TW','cf.zhetengsha.eu.org#HK'
-];  // 在此感谢各位大佬维护的优选域名
+let cfip = [ // Format: Optimized Domain:Port#Alias, Optimized IP:Port#Alias, [Optimized IPv6]:Port#Alias, Optimized Domain#Alias
+    'mfa.gov.ua#SG', 'singapore.com#SIN', 'store.ubi.com#JP','cf.130519.xyz#KR','lb.nscl.ir#NSCL','creativecommons.org#CRE','www.speedtest.net#ST','www.visa.com#Visa','go.inmobi.com#GO', 
+    'cf.090227.xyz#SG', 'cf.877774.xyz#CF','www.wto.org:2053#WTO','sub.danfeng.eu.org#TW','chatgpt.com#GPT','188.114.97.6#188'
+]; 
 const WS_READY_STATE_OPEN = 1;
 const WS_READY_STATE_CLOSING = 2;
 function closeSocketQuietly(socket) { 
@@ -289,7 +289,7 @@ export default {
                         }
                         
                         const vlsNodeName = nodeName ? `${nodeName}-${vlsHeader}` : `Workers-${vlsHeader}`;
-                        return `${vlsHeader}://${yourUUID}@${host}:${port}?encryption=none&security=tls&sni=${currentDomain}&fp=firefox&allowInsecure=0&type=ws&host=${currentDomain}&path=%2F%3Fed%3D2560#${vlsNodeName}`;
+                        return `${vlsHeader}://${yourUUID}@${host}:${port}?encryption=none&security=tls&sni=${currentDomain}&fp=chrome&allowInsecure=0&type=ws&host=${currentDomain}&path=%2Fvl%2F68syp58e00679rcfg84e92%3Fed%3D2560#${vlsNodeName}`;
                     });
                     
                     // 生成 Tro-jan 节点
@@ -317,7 +317,7 @@ export default {
                             }
                             
                             const troNodeName = nodeName ? `${nodeName}-${troHeader}` : `Workers-${troHeader}`;
-                            return `${troHeader}://${yourUUID}@${host}:${port}?security=tls&sni=${currentDomain}&fp=firefox&allowInsecure=0&type=ws&host=${currentDomain}&path=%2F%3Fed%3D2560#${troNodeName}`;
+                            return `${troHeader}://${yourUUID}@${host}:${port}?security=tls&sni=${currentDomain}&fp=chrome&allowInsecure=0&type=ws&host=${currentDomain}&path=%2Ftr%2F68syp58er9555rcfg84e92%3Fed%3D2560#${troNodeName}`;
                         });
                         allLinks = [...vlsLinks, ...troLinks];
                     }
@@ -821,6 +821,13 @@ function getHomePage(request) {
 	return getLoginPage(url, baseUrl, false);
 }
 
+/**
+ * 获取登录页面
+ * @param {string} url 
+ * @param {string} baseUrl 
+ * @param {boolean} showError 
+ * @returns {Response}
+ */
 function getLoginPage(url, baseUrl, showError = false) {
 	const html = `<!DOCTYPE html>
 <html lang="zh-CN">
