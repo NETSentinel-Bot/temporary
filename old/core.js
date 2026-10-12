@@ -1,13 +1,13 @@
 const decodeSecure = (encoded) => atob(encoded);
 
 export const SENS = {
-  vless:   () => decodeSecure("dmxlc3M="),
-  ws:      () => decodeSecure("d3M="),
-  wsOpts:  () => decodeSecure("d3Mtb3B0czo="),
-  edLine:  () => decodeSecure("ZWFybHktZGF0YS1oZWFkZXItbmFtZTog"),
+  vless: () => decodeSecure("dmxlc3M="),
+  ws: () => decodeSecure("d3M="),
+  wsOpts: () => decodeSecure("d3Mtb3B0czo="),
+  edLine: () => decodeSecure("ZWFybHktZGF0YS1oZWFkZXItbmFtZTog"),
   hiddify: () => decodeSecure("aGlkZGlmZTovL2luc3RhbGwtY29uZmlnP3VybD0="),
   v2rayng: () => decodeSecure("djJyYXluZzovL2luc3RhbGwtY29uZmlnP3VybD0="),
-  clash:   () => decodeSecure("Y2xhc2g6Ly9pbnN0YWxsLWNvbmZpZz91cmw9"),
+  clash: () => decodeSecure("Y2xhc2g6Ly9pbnN0YWxsLWNvbmZpZz91cmw9"),
   exclave: () => decodeSecure("c246Ly9zdWJzY3JpcHRpb24/dXJsPQ=="),
 };
 
@@ -45,9 +45,79 @@ export const Config = {
       proxyPool: pool,
       proxyAddress: pool[0],
       workerName: env.WORKERNAME || "",
+      nat64: env.NAT64 !== "off",
     };
   },
 };
+
+const IPV4_REGEX = /^\d{1,3}(\.\d{1,3}){3}$/;
+export const API_HEADERS = {
+  "User-Agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36",
+  Accept: "application/json",
+};
+
+export async function resolveIPv4ViaDoH(hostname) {
+  if (IPV4_REGEX.test(hostname)) return hostname;
+  try {
+    const resp = await safeFetch(
+      `https://1.1.1.1/dns-query?name=${encodeURIComponent(hostname)}&type=A`,
+      { headers: { accept: "application/dns-json" } },
+      4000,
+    );
+    const data = await resp.json();
+    const answer = (data.Answer || []).find((a) => a.type === 1);
+    return answer ? answer.data : null;
+  } catch (error) {
+    return null;
+  }
+}
+
+export async function fetchDomainIpPool(domain, timeout = 60000) {
+  const parseResults = (data) => {
+    if (!data || data.success === false || !Array.isArray(data.results)) return [];
+    return data.results
+      .filter((r) => r && typeof r.ip === "string" && IPV4_REGEX.test(r.ip))
+      .map((r) => ({
+        ip: r.ip,
+        score: typeof r.fraud_score === "number" ? r.fraud_score : null,
+        risk: r.risk ? r.risk.charAt(0).toUpperCase() + r.risk.slice(1) : "Unknown",
+        country: r.details?.country || "Unknown",
+        countryCode: (r.details?.country_code || "").toLowerCase(),
+      }));
+  };
+
+  try {
+    const resPages = await safeFetch(
+      `https://cf-connected.pages.dev/api/domain/${encodeURIComponent(domain)}`,
+      { headers: API_HEADERS },
+      timeout,
+    );
+    if (resPages.ok) {
+      const dataPages = await resPages.json();
+      const pool = parseResults(dataPages);
+      if (pool.length > 0) return pool;
+    }
+  } catch (e) {
+    console.error("Primary — fetchDomainIpPool failed:", e.toString());
+  }
+
+  try {
+    const resHarmonica = await safeFetch(
+      `https://api-serpents.pages.dev/api/domain/${encodeURIComponent(domain)}`,
+      { headers: API_HEADERS },
+      timeout,
+    );
+    if (resHarmonica.ok) {
+      const dataHarmonica = await resHarmonica.json();
+      return parseResults(dataHarmonica);
+    }
+  } catch (e) {
+    console.error("Secondary — fetchDomainIpPool failed:", e.toString());
+  }
+
+  return [];
+}
 
 export async function safeFetch(url, options = {}, timeout = 4000) {
   const controller = new AbortController();
@@ -56,6 +126,125 @@ export async function safeFetch(url, options = {}, timeout = 4000) {
     return await fetch(url, { ...options, signal: controller.signal });
   } finally {
     clearTimeout(id);
+  }
+}
+
+const ZIZIFN_PROXY_POOL_URL =
+  "https://raw.githubusercontent.com/NiREvil/vless/refs/heads/main/sub/ProxyIP-for-zizifn.json";
+
+const ZIZIFN_PROXY_POOL_FRESH_TTL = 21600;
+const ZIZIFN_PROXY_POOL_STALE_TTL = 259200;
+
+function createProxyPoolCacheKey(type) {
+  return new Request(`https://cf-zizifn-proxy-pool.local/${type}`);
+}
+
+function validateZizifnProxyPool(data) {
+  if (!data || typeof data !== "object") {
+    throw new Error("Invalid ProxyIP dataset");
+  }
+
+  if (!Array.isArray(data.proxies)) {
+    throw new Error("ProxyIP dataset has no proxies array");
+  }
+
+  if (!data.proxies.length) {
+    throw new Error("ProxyIP dataset is empty");
+  }
+
+  const validProxies = data.proxies.filter(
+    (proxy) =>
+      proxy &&
+      typeof proxy.ip === "string" &&
+      proxy.ip.length > 0 &&
+      Number.isInteger(proxy.port),
+  );
+
+  if (!validProxies.length) {
+    throw new Error("ProxyIP dataset contains no valid proxies");
+  }
+
+  return {
+    ...data,
+    proxies: validProxies,
+  };
+}
+
+export async function fetchZizifnProxyPool(ctx) {
+  const cache = caches.default;
+  const freshKey = createProxyPoolCacheKey("fresh");
+  const staleKey = createProxyPoolCacheKey("stale");
+
+  try {
+    const fresh = await cache.match(freshKey);
+
+    if (fresh) {
+      return validateZizifnProxyPool(await fresh.json());
+    }
+  } catch (error) {
+    console.error("ProxyIP fresh cache read failed:", error);
+  }
+
+  try {
+    const response = await safeFetch(
+      ZIZIFN_PROXY_POOL_URL,
+      {
+        headers: {
+          Accept: "application/json",
+        },
+      },
+      8000,
+    );
+
+    if (!response.ok) {
+      throw new Error(`GitHub returned HTTP ${response.status}`);
+    }
+
+    const text = await response.text();
+
+    if (!text || text.length < 100) {
+      throw new Error("GitHub returned an unexpectedly small dataset");
+    }
+
+    const data = validateZizifnProxyPool(JSON.parse(text));
+
+    const cacheResponse = new Response(text, {
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": `public, max-age=${ZIZIFN_PROXY_POOL_FRESH_TTL}`,
+      },
+    });
+
+    const staleResponse = new Response(text, {
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": `public, max-age=${ZIZIFN_PROXY_POOL_STALE_TTL}`,
+      },
+    });
+
+    ctx?.waitUntil(
+      Promise.all([
+        cache.put(freshKey, cacheResponse),
+        cache.put(staleKey, staleResponse),
+      ]),
+    );
+
+    return data;
+  } catch (error) {
+    console.error("ProxyIP GitHub fetch failed:", error);
+
+    try {
+      const stale = await cache.match(staleKey);
+
+      if (stale) {
+        console.warn("Using stale ProxyIP dataset");
+        return validateZizifnProxyPool(await stale.json());
+      }
+    } catch (staleError) {
+      console.error("ProxyIP stale cache read failed:", staleError);
+    }
+
+    throw new Error("ProxyIP dataset unavailable");
   }
 }
 
@@ -72,6 +261,20 @@ export function generateRandomPath(length = 28, query = "") {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
   }
   return `/${result}${query ? `?${query}` : ""}`;
+}
+
+export function withConfigOverrides(path, { nat64, proxyIP } = {}) {
+  const params = [];
+  if (nat64 !== undefined) {
+    params.push(`nat64=${nat64 ? "on" : "off"}`);
+  }
+  if (proxyIP) {
+    const normalizedProxyIP = proxyIP.replace(/%3a/gi, ":");
+    params.push(`proxyip=${normalizedProxyIP}`);
+  }
+  if (!params.length) return path;
+  const sep = path.includes("?") ? "&" : "?";
+  return `${path}${sep}${params.join("&")}`;
 }
 
 export const CORE_PRESETS = {
@@ -99,8 +302,65 @@ export const CORE_PRESETS = {
       alpn: "http/1.1",
       extra: CONST.ED_PARAMS,
     },
+    tcp: {
+      path: () => generateRandomPath(18),
+      security: "none",
+      fp: "chrome",
+      alpn: "http/1.1",
+      extra: CONST.ED_PARAMS,
+    },
   },
 };
+
+export const CF_TLS_PORTS = [443, 2053, 2083, 2087, 2096, 8443];
+export const CF_NON_TLS_PORTS = [80, 8080, 2052, 2082, 2086, 2095, 8880];
+
+export function pickRandomProxyPort(isPagesDeployment) {
+  const pool = isPagesDeployment
+    ? CF_TLS_PORTS.map((port) => ({ port, proto: "tls" }))
+    : [
+        ...CF_TLS_PORTS.map((port) => ({ port, proto: "tls" })),
+        ...CF_NON_TLS_PORTS.map((port) => ({ port, proto: "tcp" })),
+      ];
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+export function countryCodeToFlagEmoji(countryCode) {
+  if (!countryCode || countryCode.length !== 2) return "";
+  const code = countryCode.toUpperCase();
+  const points = [...code].map((c) => 0x1f1e6 + (c.charCodeAt(0) - 65));
+  if (points.some((p) => p < 0x1f1e6 || p > 0x1f1ff)) return "";
+  return String.fromCodePoint(...points);
+}
+
+export async function cacheGetJson(key) {
+  try {
+    const res = await caches.default.match(
+      new Request(`https://cf-ipmeta-cache.local/${encodeURIComponent(key)}`),
+    );
+    if (!res) return null;
+    return await res.json();
+  } catch (e) {
+    return null;
+  }
+}
+
+export async function cachePutJson(ctx, key, value, maxAgeSeconds = 21600) {
+  try {
+    const res = new Response(JSON.stringify(value), {
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": `public, max-age=${maxAgeSeconds}`,
+      },
+    });
+    const put = caches.default.put(
+      new Request(`https://cf-ipmeta-cache.local/${encodeURIComponent(key)}`),
+      res,
+    );
+    if (ctx?.waitUntil) ctx.waitUntil(put);
+    else await put;
+  } catch (e) {}
+}
 
 export function makeName(tag, proto) {
   return `${tag}-${proto.toUpperCase()}`;
@@ -133,14 +393,25 @@ export function createVlessLink({
   return `${CONST.VLESS_PROTOCOL}://${userID}@${address}:${port}?${params.toString()}#${encodeURIComponent(name)}`;
 }
 
-export function buildLink({ core, proto, userID, hostName, address, port, tag, enhanced = false }) {
+export function buildLink({
+  core,
+  proto,
+  userID,
+  hostName,
+  address,
+  port,
+  tag,
+  enhanced = false,
+  overrides,
+}) {
   const p = CORE_PRESETS[core][proto];
+  const path = overrides ? withConfigOverrides(p.path(), overrides) : p.path();
   return createVlessLink({
     userID,
     address,
     port,
     host: hostName,
-    path: p.path(),
+    path,
     security: p.security,
     sni: p.security === "tls" ? hostName : undefined,
     fp: enhanced && p.security === "tls" ? "unsafe" : p.fp,
@@ -210,6 +481,10 @@ export function buildSubscriptionHeaders(subName) {
     "Profile-Update-Interval": "8",
     "Subscription-Userinfo": subInfo,
   };
-  if (subName) headers["Profile-Title"] = subName;
+  if (subName) {
+    headers["Profile-Title"] = /^[\x20-\x7e]+$/.test(subName)
+      ? subName
+      : `base64:${btoa(String.fromCharCode(...new TextEncoder().encode(subName)))}`;
+  }
   return headers;
-}
+ }
