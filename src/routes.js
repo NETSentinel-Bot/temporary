@@ -17,7 +17,7 @@ import {
   API_HEADERS,
 } from "./core.js";
 
-import panelB64 from "./panel.b64";
+const panelB64 = "";
 
 let panelHtml = null;
 function getPanelHtml() {
