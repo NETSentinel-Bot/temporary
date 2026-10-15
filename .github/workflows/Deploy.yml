@@ -229,6 +229,20 @@ jobs:
             echo "${{ steps.placementval.outputs.key }} = \"${{ steps.placementval.outputs.value }}\""
           } >> wrangler.toml
 
+      - name: Setup Node.js (for wrangler dry-run)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Dry-run deploy → inspect bundled artifacts
+        id: dryrun
+        run: |
+          npx wrangler deploy --dry-run --outdir=./dist-check
+          echo "----- dist-check contents -----"
+          ls -la ./dist-check
+          echo "----- JSON metadata (if any) -----"
+          cat ./dist-check/*.json 2>/dev/null || echo "(no .json files produced by wrangler)"
+
       - name: "Deploy via Wrangler Action (${{ steps.worker.outputs.name }} → ${{ steps.account.outputs.label }})"
         id: deploy
         uses: cloudflare/wrangler-action@v4
