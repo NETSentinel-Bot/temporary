@@ -242,6 +242,8 @@ jobs:
           ls -la ./dist-check
           echo "----- JSON metadata (if any) -----"
           cat ./dist-check/*.json 2>/dev/null || echo "(no .json files produced by wrangler)"
+          echo "----- .wasm references inside index.js -----"
+          grep -o '.\{60\}\.wasm.\{20\}' dist-check/index.js | head -3 || echo "(no .wasm references found or index.js missing)"
 
       - name: "Deploy via Wrangler Action (${{ steps.worker.outputs.name }} → ${{ steps.account.outputs.label }})"
         id: deploy
