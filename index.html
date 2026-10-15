@@ -1,13 +1,12 @@
 <!doctype html>
 <html lang="en">
-
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="dark" />
     <meta name="theme-color" content="#0d1117" />
     <title>VLESS Proxy Configuration</title>
-    <link rel="icon" href="https://pub-b3ab4c8172fb44e29854df3435aa223d.r2.dev/raven.png" type="image/png">
+    <link rel="icon" href="https://pub-b3ab4c8172fb44e29854df3435aa223d.r2.dev/REvil.svg" type="image/svg" />
     <style>
       :root {
         --fgColor-default: #e6edf3;
@@ -36,7 +35,8 @@
         --font-sans:
           -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif,
           "Apple Color Emoji", "Segoe UI Emoji";
-        --font-mono: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+        --font-mono:
+          ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
         --transition: 100ms ease;
       }
 
@@ -133,7 +133,7 @@
         color: var(--fgColor-default);
       }
 
-      .config-title>span {
+      .config-title > span {
         min-width: 0;
       }
 
@@ -285,16 +285,16 @@
 
       .button.copied,
       .client-btn.copied {
-        background: var(--success-muted) !important;
-        border-color: rgba(63, 185, 80, 0.4) !important;
-        color: #7ee787 !important;
+        background: var(--bgColor-overlay);
+        border-color: var(--borderColor-default);
+        color: var(--fgColor-default);
       }
 
       .button.error,
       .client-btn.error {
-        background: var(--danger-muted) !important;
-        border-color: rgba(248, 81, 73, 0.4) !important;
-        color: #ff9b92 !important;
+        background: var(--bgColor-overlay);
+        border-color: var(--borderColor-default);
+        color: var(--fgColor-default);
       }
 
       .fragment-builder {
@@ -898,198 +898,6 @@
         border-color: var(--borderColor-default);
       }
 
-      .proxy-pool-card {
-        background: #000;
-        border: 1px solid var(--borderColor-muted);
-        border-radius: 14px;
-      }
-
-      .proxy-pool-intro {
-        color: var(--fgColor-muted);
-        margin: 0 0 14px;
-      }
-
-      .proxy-pool-search {
-        width: 100%;
-        min-height: 42px;
-        padding: 10px 12px;
-        margin-bottom: 12px;
-        border: 1px solid var(--borderColor-muted);
-        border-radius: 10px;
-        background: var(--bgColor-inset);
-        color: var(--fgColor-default);
-        font: inherit;
-      }
-
-      .proxy-pool-country {
-        border: 1px solid var(--borderColor-muted);
-        border-radius: 10px;
-        margin-bottom: 8px;
-        overflow: hidden;
-      }
-
-      .proxy-pool-country summary {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-        padding: 13px;
-        cursor: pointer;
-        list-style: none;
-      }
-
-      .proxy-pool-country summary::-webkit-details-marker {
-        display: none;
-      }
-
-      .proxy-pool-country summary::before {
-        content: "⌄";
-        color: var(--fgColor-muted);
-        margin-right: auto;
-      }
-
-      .proxy-pool-country[open] summary::before {
-        content: "⌃";
-      }
-
-      .proxy-pool-country summary .country-name {
-        margin-left: auto;
-      }
-
-      .proxy-pool-count {
-        color: var(--fgColor-muted);
-        font-size: 12px;
-      }
-
-      .proxy-pool-list {
-        padding: 0 12px 12px;
-      }
-
-      .proxy-pool-proxy {
-        display: flex;
-        align-items: flex-start;
-        gap: 10px;
-        padding: 10px 0;
-        border-top: 1px solid var(--borderColor-muted);
-      }
-
-      .proxy-pool-proxy input {
-        margin-top: 4px;
-        accent-color: var(--fgColor-accent);
-      }
-
-      .proxy-pool-proxy label {
-        min-width: 0;
-        flex: 1;
-        overflow-wrap: anywhere;
-        cursor: pointer;
-      }
-
-      .proxy-pool-meta {
-        display: block;
-        margin-top: 3px;
-        color: var(--fgColor-muted);
-        font-size: 11px;
-      }
-
-      .proxy-pool-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        align-items: center;
-        margin-top: 12px;
-      }
-
-      .proxy-pool-status {
-        color: var(--fgColor-muted);
-        font-size: 12px;
-        margin: 10px 0 0;
-        overflow-wrap: anywhere;
-      }
-
-      .proxy-pool-output {
-        display: grid;
-        gap: 10px;
-        margin-top: 14px;
-      }
-
-      .proxy-pool-result {
-        border: 1px solid var(--borderColor-muted);
-        border-radius: 10px;
-        padding: 10px;
-        min-width: 0;
-      }
-
-      .proxy-pool-result-title {
-        font-weight: 600;
-        margin-bottom: 8px;
-        overflow-wrap: anywhere;
-      }
-
-      .proxy-pool-result pre {
-        margin: 0 0 10px;
-        padding: 10px;
-        background: var(--bgColor-inset);
-        border-radius: 8px;
-        white-space: pre-wrap;
-        overflow-wrap: anywhere;
-        font: 11px/1.6 var(--font-mono);
-      }
-
-      .proxy-pool-muted {
-        color: var(--fgColor-muted);
-        font-size: 12px;
-      }
-
-      .proxy-pool-actions .button {
-        min-height: 34px;
-      }
-
-      @media (max-width: 640px) {
-        .fragment-toolbar {
-          grid-template-columns: 1fr;
-        }
-
-        .fragment-node-body {
-          grid-template-columns: 1fr;
-        }
-
-        .fragment-field.full {
-          grid-column: auto;
-        }
-
-        .fragment-footer {
-          align-items: stretch;
-          flex-direction: column;
-        }
-
-        .fragment-fingerprint {
-          justify-content: space-between;
-        }
-
-        .fragment-reset {
-          width: 100%;
-        }
-      }
-
-      @media (max-width: 420px) {
-        .fragment-status {
-          display: none;
-        }
-
-        .fragment-heading-text span {
-          font-size: 10px;
-        }
-
-        .fragment-presets {
-          grid-template-columns: 1fr;
-        }
-
-        .fragment-view-toggle {
-          justify-content: center;
-        }
-      }
-
       .ip-info-grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1196,6 +1004,306 @@
         border-color: rgba(88, 166, 255, 0.3);
       }
 
+      .cards-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        align-items: stretch;
+      }
+
+      .cards-row .config-card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+
+      .cards-row .nat64-card .nat64-copy-btn {
+        margin-top: auto;
+      }
+
+      .card-desc {
+        margin: 0 0 10px;
+        color: var(--fgColor-muted);
+        font-size: 12px;
+        line-height: 1.55;
+      }
+
+      .switch {
+        position: relative;
+        display: inline-flex;
+        flex: 0 0 auto;
+      }
+
+      .switch input {
+        position: absolute;
+        opacity: 0;
+        width: 1px;
+        height: 1px;
+      }
+
+      .switch-track {
+        width: 38px;
+        height: 22px;
+        border-radius: 999px;
+        background: var(--bgColor-overlay);
+        border: 1px solid var(--borderColor-default);
+        display: inline-flex;
+        align-items: center;
+        padding: 2px;
+        cursor: pointer;
+        transition:
+          background-color var(--transition),
+          border-color var(--transition);
+      }
+
+      .switch-thumb {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--fgColor-muted);
+        transition:
+          transform var(--transition),
+          background-color var(--transition);
+      }
+
+      .switch input:checked + .switch-track {
+        background: var(--accent-emphasis);
+        border-color: var(--accent-emphasis);
+      }
+
+      .switch input:checked + .switch-track .switch-thumb {
+        transform: translateX(16px);
+        background: #fff;
+      }
+
+      .switch input:focus-visible + .switch-track {
+        outline: 2px solid var(--focus-outline);
+        outline-offset: 1px;
+      }
+
+      .nat64-status-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 7px 0;
+        border-top: 1px solid var(--borderColor-muted);
+        font-size: 12px;
+        color: var(--fgColor-muted);
+      }
+
+      .nat64-copy-btn {
+        width: 100%;
+        margin-top: 10px;
+      }
+
+      .proxyip-country-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 8px;
+        min-width: 0;
+      }
+
+      .proxyip-country-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 9px;
+        border: 1px solid var(--borderColor-default);
+        border-radius: 999px;
+        background: var(--bgColor-inset);
+        color: var(--fgColor-default);
+        font: inherit;
+        font-size: 11px;
+        cursor: pointer;
+        transition:
+          background-color var(--transition),
+          border-color var(--transition),
+          color var(--transition);
+      }
+
+      .proxyip-country-btn .country-name {
+        white-space: nowrap;
+      }
+
+      .proxyip-country-btn:hover {
+        border-color: var(--fgColor-accent);
+      }
+
+      .proxyip-country-btn .flag {
+        font-size: 13px;
+        line-height: 1;
+      }
+
+      .proxyip-country-btn .risk-hint {
+        color: var(--fgColor-muted);
+        font-size: 10px;
+      }
+
+      .proxyip-country-btn.active {
+        background: var(--accent-muted);
+        border-color: var(--accent-emphasis);
+        color: #79c0ff;
+      }
+
+      .proxyip-country-btn.active .risk-hint {
+        color: inherit;
+        opacity: 0.85;
+      }
+
+      .proxyip-bulk-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 10px 12px;
+        margin-bottom: 8px;
+        background: var(--bgColor-inset);
+        border: 1px solid var(--borderColor-muted);
+        border-radius: var(--radius-md);
+      }
+
+      .proxyip-bulk-count {
+        font-size: 11px;
+        color: var(--fgColor-muted);
+        white-space: nowrap;
+      }
+
+      .proxyip-bulk-actions {
+        display: flex;
+        gap: 6px;
+      }
+
+      .proxyip-bulk-actions .icon-btn {
+        font-size: 11px;
+      }
+
+      .proxyip-select {
+        width: 15px;
+        height: 15px;
+        flex: none;
+        accent-color: var(--accent-emphasis, #2f81f7);
+        cursor: pointer;
+      }
+
+      .proxyip-index {
+        flex: none;
+        min-width: 18px;
+        font-family: var(--font-mono);
+        font-size: 10px;
+        color: var(--fgColor-muted);
+        text-align: right;
+      }
+
+      .proxyip-ip-options {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        margin-top: 4px;
+      }
+
+      .proxyip-ip-option {
+        border: 1px solid var(--borderColor-default);
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+        background: var(--bgColor-inset);
+      }
+
+      .proxyip-ip-toggle {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        padding: 6px 8px;
+        cursor: pointer;
+      }
+
+      .proxyip-ip-addr {
+        flex: 1;
+        min-width: 0;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 11px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .proxyip-ip-configs {
+        display: none;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px;
+        padding: 8px;
+        background: var(--bgColor-inset);
+        border-top: 1px solid var(--borderColor-muted);
+      }
+
+      .proxyip-ip-option.selected .proxyip-ip-configs {
+        display: grid;
+      }
+
+      .proxyip-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        flex: 1;
+        min-height: 0;
+        max-height: 360px;
+        overflow-y: auto;
+      }
+
+      .proxyip-item {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        padding: 9px 10px;
+        background: var(--bgColor-inset);
+        border: 1px solid var(--borderColor-muted);
+        border-radius: var(--radius-md);
+      }
+
+      .proxyip-item-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        min-width: 0;
+      }
+
+      .proxyip-item-host {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--fgColor-default);
+      }
+
+      .proxyip-ip-configs .icon-btn {
+        width: 100%;
+        gap: 5px;
+        font-size: 11px;
+      }
+
+      .proxyip-ip-configs .icon-btn {
+        background: var(--bgColor-muted);
+        border-color: var(--borderColor-default);
+        color: var(--fgColor-default);
+      }
+
+      .proxyip-ip-configs .icon-btn:hover {
+        background: var(--accent-muted);
+        border-color: var(--accent-emphasis);
+        color: #79c0ff;
+      }
+
+      .proxyip-empty {
+        color: var(--fgColor-muted);
+        font-size: 12px;
+        padding: 6px 0;
+      }
+
       .skeleton {
         display: block;
         width: 100%;
@@ -1237,12 +1345,12 @@
       }
 
       .custom-routing-trigger {
-        display: inline-flex;
+        display: flex;
         align-items: center;
         justify-content: center;
         gap: 5px;
         width: fit-content;
-        margin: 4px auto 0;
+        margin: 12px auto;
         padding: 3px 0;
         color: var(--fgColor-muted);
         font-size: 11px;
@@ -1423,84 +1531,403 @@
         flex: 0 0 auto;
       }
 
+      .cards-row .config-card.nat64-card,
+      .cards-row .config-card.proxyip-card {
+        position: relative;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 100% 0%, rgba(56, 139, 253, 0.075), transparent 36%),
+          var(--bgColor-muted);
+      }
+
+      .nat64-card::after,
+      .proxyip-card::after {
+        content: "";
+        position: absolute;
+        width: 190px;
+        height: 190px;
+        right: -110px;
+        top: -120px;
+        border-radius: 50%;
+        background: rgba(56, 139, 253, 0.045);
+        filter: blur(32px);
+        pointer-events: none;
+      }
+
+      .nat64-header,
+      .proxyip-header {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .nat64-heading,
+      .proxyip-heading {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+      }
+
+      .nat64-mark,
+      .proxyip-mark {
+        width: 36px;
+        height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        border: 1px solid rgba(88, 166, 255, 0.3);
+        border-radius: 10px;
+        background: var(--accent-muted);
+        color: #79c0ff;
+      }
+
+      .nat64-mark svg,
+      .proxyip-mark svg {
+        width: 19px;
+        height: 19px;
+      }
+
+      .nat64-heading-text,
+      .proxyip-heading-text {
+        min-width: 0;
+      }
+
+      .nat64-heading-text strong,
+      .proxyip-heading-text strong {
+        display: block;
+        color: var(--fgColor-default);
+        font-size: 14px;
+        line-height: 1.3;
+        font-weight: 600;
+      }
+
+      .nat64-heading-text span,
+      .proxyip-heading-text span {
+        display: block;
+        margin-top: 2px;
+        color: var(--fgColor-muted);
+        font-size: 11px;
+        line-height: 1.4;
+      }
+
+      .nat64-status,
+      .proxyip-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        flex: 0 0 auto;
+        padding: 4px 8px;
+        border: 1px solid rgba(63, 185, 80, 0.25);
+        border-radius: 999px;
+        background: var(--success-muted);
+        color: #7ee787;
+        font-size: 10px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      .nat64-status::before,
+      .proxyip-status::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+        box-shadow: 0 0 0 3px rgba(63, 185, 80, 0.08);
+      }
+
+      .nat64-description,
+      .proxyip-description {
+        position: relative;
+        z-index: 1;
+        margin: 0 0 12px;
+        color: var(--fgColor-muted);
+        font-size: 11px;
+        line-height: 1.55;
+      }
+
+      .nat64-route {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        min-height: 42px;
+        margin-bottom: 10px;
+        padding: 6px 8px;
+        border: 1px solid var(--borderColor-muted);
+        border-radius: 8px;
+        background: var(--bgColor-inset);
+      }
+
+      .nat64-route-node {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 0;
+        padding: 5px 7px;
+        border: 1px solid var(--borderColor-muted);
+        border-radius: 6px;
+        background: var(--bgColor-overlay);
+        color: var(--fgColor-muted);
+        font-family: var(--font-mono);
+        font-size: 9px;
+        white-space: nowrap;
+      }
+
+      .nat64-route-node.active {
+        border-color: rgba(88, 166, 255, 0.35);
+        background: var(--accent-muted);
+        color: #79c0ff;
+      }
+
+      .nat64-route-arrow {
+        color: var(--fgColor-subtle);
+        font-size: 10px;
+        line-height: 1;
+      }
+
+      .nat64-status-box {
+        position: relative;
+        z-index: 1;
+        overflow: hidden;
+        margin-bottom: 10px;
+        border: 1px solid var(--borderColor-muted);
+        border-radius: 8px;
+        background: var(--bgColor-inset);
+      }
+
+      .nat64-status-row {
+        min-height: 34px;
+        padding: 6px 9px;
+        border-top: 0;
+      }
+
+      .nat64-status-row + .nat64-status-row {
+        border-top: 1px solid var(--borderColor-muted);
+      }
+
+      .nat64-status-row > span:first-child {
+        color: var(--fgColor-muted);
+        font-size: 10px;
+      }
+
+      .nat64-copy-btn {
+        position: relative;
+        z-index: 1;
+        min-height: 34px;
+        margin-top: auto;
+        border-radius: 7px;
+      }
+
+      .proxyip-description {
+        margin-bottom: 10px;
+      }
+
+      .proxyip-toolbar {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 9px;
+      }
+
+      .proxyip-toolbar-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--fgColor-muted);
+        font-size: 9px;
+        font-weight: 600;
+      }
+
+      .proxyip-toolbar-label::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--fgColor-success);
+        box-shadow: 0 0 0 3px rgba(63, 185, 80, 0.08);
+      }
+
+      .proxyip-toolbar .refresh-btn {
+        min-height: 27px;
+        padding: 0 8px;
+        border-radius: 6px;
+        font-size: 9px;
+      }
+
+      .proxyip-country-buttons {
+        position: relative;
+        z-index: 1;
+        padding: 7px;
+        margin-bottom: 8px;
+        border: 1px solid var(--borderColor-muted);
+        border-radius: 8px;
+        background: var(--bgColor-inset);
+      }
+
+      .proxyip-country-btn {
+        min-height: 25px;
+        padding: 3px 8px;
+        border-radius: 6px;
+        font-size: 9px;
+      }
+
+      .proxyip-bulk-bar {
+        position: relative;
+        z-index: 1;
+        min-height: 34px;
+        padding: 5px 7px;
+        margin-bottom: 8px;
+        border-radius: 7px;
+      }
+
+      .proxyip-bulk-count {
+        font-family: var(--font-mono);
+        font-size: 9px;
+      }
+
+      .proxyip-bulk-actions {
+        gap: 5px;
+      }
+
+      .proxyip-bulk-actions .icon-btn {
+        min-height: 26px;
+        padding: 0 7px;
+        border-radius: 5px;
+        font-size: 9px;
+      }
+
+      .proxyip-list {
+        position: relative;
+        z-index: 1;
+        max-height: 330px;
+        padding-right: 1px;
+      }
+
+      .proxyip-item {
+        padding: 8px;
+        border-radius: 8px;
+        background: var(--bgColor-inset);
+        transition:
+          border-color var(--transition),
+          background-color var(--transition);
+      }
+
+      .proxyip-item:hover {
+        border-color: var(--borderColor-default);
+      }
+
+      .proxyip-item-head {
+        min-height: 22px;
+      }
+
+      .proxyip-item-host {
+        font-size: 10px;
+      }
+
+      .proxyip-ip-options {
+        margin-top: 5px;
+        gap: 4px;
+      }
+
+      .proxyip-ip-option {
+        border-radius: 6px;
+      }
+
+      .proxyip-ip-toggle {
+        min-height: 29px;
+        padding: 5px 7px;
+      }
+
+      .proxyip-ip-addr {
+        font-size: 10px;
+      }
+
+      .proxyip-index {
+        font-size: 9px;
+      }
+
+      .proxyip-ip-configs {
+        padding: 6px;
+        gap: 5px;
+      }
+
+      .proxyip-ip-configs .icon-btn {
+        min-height: 27px;
+        border-radius: 5px;
+        font-size: 9px;
+      }
+
       @media (max-width: 900px) {
-        .ip-info-grid {
-          grid-template-columns: 1fr;
-        }
+        .ip-info-grid { grid-template-columns: 1fr; }
+      }
+
+      @media (max-width: 760px) {
+        .cards-row { grid-template-columns: 1fr; }
       }
 
       @media (max-width: 640px) {
-        body {
-          padding: 12px;
-        }
+        body { padding: 12px; }
+        .container { gap: 10px; }
+        .config-card { padding: 12px; }
+        .header p,
+        .footer { font-size: 11px; }
 
-        .container {
-          gap: 10px;
-        }
+        .client-buttons { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .modal-btn-group,
+        .fragment-toolbar,
+        .fragment-node-body { grid-template-columns: 1fr; }
+        .fragment-field.full { grid-column: auto; }
+        .fragment-footer {align-items: stretch; flex-direction: column;}
+        .fragment-fingerprint { justify-content: space-between; }
+        .fragment-reset { width: 100%; }
 
-        .config-card {
-          padding: 12px;
-        }
-
-        .client-buttons {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .modal-btn-group {
-          grid-template-columns: 1fr;
-        }
-
-        .header p {
-          font-size: 11px;
-        }
-
-        .footer {
-          font-size: 11px;
-        }
+        .nat64-header,
+        .proxyip-header { align-items: flex-start; }
+        .nat64-status,
+        .proxyip-status { padding: 3px 7px; font-size: 9px; }
+        .nat64-route { overflow-x: auto; }
+        .nat64-route-node { flex: 0 0 auto; }
       }
 
-      @media (max-width: 420px) {
-        body {
-          padding: 10px;
-        }
-
-        .config-title {
-          align-items: flex-start;
-          flex-direction: column;
-        }
-
-        .config-title .refresh-btn {
-          width: 100%;
-        }
+      @media (max-width: 430px) {
+        body { padding: 10px; }
 
         .ip-info-section,
         .config-content,
-        .modal-content {
-          padding: 10px;
-        }
+        .modal-content { padding: 10px; }
 
-        .client-btn .button-text {
-          font-size: 11px;
-        }
-
-        .client-btn {
-          min-height: 32px;
-        }
+        .client-btn { min-height: 32px; }
+        .client-btn .button-text { font-size: 11px; }
 
         .button,
         .refresh-btn,
         .icon-btn,
-        .client-btn {
-          font-size: 12px;
-        }
+        .client-btn { font-size: 12px; }
 
-        .ip-info-item .label {
-          font-size: 10px;
-        }
+        .ip-info-item .label { font-size: 10px; }
+        .ip-info-item .value { font-size: 12px; }
 
-        .ip-info-item .value {
-          font-size: 12px;
-        }
+        .fragment-presets,
+        .fragment-view-toggle {padding: 2px; gap: 2px;}
+        .fragment-preset,
+        .fragment-view-btn {min-height: 28px; font-size: 10px;}
+        .fragment-status { display: none; }
+        .fragment-heading-text span { font-size: 10px; }
+        .nat64-header,
+        .proxyip-header { flex-wrap: wrap; }
+        .nat64-status,
+        .proxyip-status { margin-left: 46px; }
       }
     </style>
   </head>
@@ -1558,7 +1985,7 @@
       <div class="config-card">
         <div class="config-title">
           <span>Xray Core Clients</span>
-          <button class="icon-btn" aria-label="Copy configuration" title="Copy configuration" onclick="copyToClipboard(this, '{{CONFIG_DREAM}}')">
+          <button id="xray-copy-btn" class="icon-btn" aria-label="Copy configuration" title="Copy configuration">
             <svg class="copy-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
               <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -1600,36 +2027,127 @@
         </div>
       </div>
 
-      <div class="config-card proxy-pool-card" id="proxy-pool-card">
-        <div class="config-title">
-          <span>ProxyIPs</span>
-          <span id="proxy-pool-total" class="proxy-pool-count">Loading...</span>
-        </div>
+      <div class="cards-row">
+        <div class="config-card nat64-card">
+          <div class="nat64-header">
+            <div class="nat64-heading">
+              <div class="nat64-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M3 12h18M12 3c2.5 2.5 3.5 5.5 3.5 9S14.5 16.5 12 21M12 3c-2.5 2.5-3.5 5.5-3.5 9S9.5 18.5 12 21" />
+                </svg>
+              </div>
+              <div class="nat64-heading-text">
+                <strong>NAT64 Fallback</strong>
+                <span>IPv4 fallback through Cloudflare NAT64</span>
+              </div>
+            </div>
 
-        <p class="proxy-pool-intro">
-          Select a country to explore available proxy IPs.
-          Choose up to 10 IPs to generate separate Xray configurations.
-        </p>
+            <label class="switch" aria-label="Toggle NAT64 fallback for the copied config">
+              <input type="checkbox" id="nat64-toggle" data-default="{{NAT64_DEFAULT}}">
+              <span class="switch-track">
+                <span class="switch-thumb"></span>
+              </span>
+            </label>
+          </div>
 
-        <input id="proxy-pool-search" class="proxy-pool-search" type="search" placeholder="Search countries..." aria-label="Search countries" autocomplete="off" />
+          <p class="nat64-description">
+            If the direct route and configured ProxyIPs fail, the worker can translate the destination through
+            <span class="mono">64:ff9b::/96</span> and use Cloudflare's NAT64 gateway as the final fallback.
+          </p>
 
-        <div id="proxy-pool-countries">
-          <p class="proxy-pool-muted">Loading ProxyIP dataset...</p>
-        </div>
+          <div class="nat64-route">
+            <span class="nat64-route-node">Direct</span>
+            <span class="nat64-route-arrow">→</span>
+            <span class="nat64-route-node">ProxyIP</span>
+            <span class="nat64-route-arrow">→</span>
+            <span class="nat64-route-node active">NAT64</span>
+          </div>
 
-        <div class="proxy-pool-actions">
-          <span id="proxy-pool-selected" class="proxy-pool-count">0 selected</span>
-          <button id="proxy-pool-generate" class="button" type="button" disabled>
-            Generate Configs
+          <div class="nat64-status-box">
+            <div class="nat64-status-row">
+              <span>Server default</span>
+              <span id="nat64-server-badge" class="badge badge-neutral">…</span>
+            </div>
+
+            <div class="nat64-status-row">
+              <span>This config</span>
+              <span id="nat64-config-badge" class="badge badge-neutral">…</span>
+            </div>
+          </div>
+
+          <button id="nat64-copy-btn" type="button" class="icon-btn nat64-copy-btn" aria-label="Copy config with this NAT64 setting" data-nat64-on-normal="{{CONFIG_NAT64_ON_NORMAL}}" data-nat64-on-enhanced="{{CONFIG_NAT64_ON_ENHANCED}}" data-nat64-off-normal="{{CONFIG_NAT64_OFF_NORMAL}}" data-nat64-off-enhanced="{{CONFIG_NAT64_OFF_ENHANCED}}">
+            <svg class="copy-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span class="button-text">Copy Xray config with this setting</span>
           </button>
-          <button id="proxy-pool-clear" class="button" type="button">
-            Clear Selection
-          </button>
         </div>
 
-        <p id="proxy-pool-status" class="proxy-pool-status" role="status" aria-live="polite"></p>
+        <div id="proxyip-card" class="config-card proxyip-card" data-url="{{URL_PROXYIPS}}">
+          <div class="proxyip-header">
+            <div class="proxyip-heading">
+              <div class="proxyip-mark" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="3" />
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M3 12h6M15 12h6M12 3v6M12 15v6" />
+                </svg>
+              </div>
 
-        <div id="proxy-pool-output" class="proxy-pool-output"></div>
+              <div class="proxyip-heading-text">
+                <strong>ProxyIPs</strong>
+                <span>Available fallback proxy endpoints</span>
+              </div>
+            </div>
+
+            <span class="proxyip-status">Live List</span>
+          </div>
+
+          <p class="proxyip-description">
+            Select a country and choose one or more proxy endpoints to generate client-ready configurations.
+          </p>
+
+          <div class="proxyip-toolbar">
+            <span class="proxyip-toolbar-label">Available locations</span>
+
+            <button id="proxyip-refresh" class="refresh-btn" aria-label="Refresh ProxyIP list" title="Refresh ProxyIP list">
+              <svg class="refresh-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" />
+              </svg>
+              Refresh
+            </button>
+          </div>
+
+          <div id="proxyip-country-buttons" class="proxyip-country-buttons"></div>
+
+          <div id="proxyip-bulk-bar" class="proxyip-bulk-bar">
+            <span id="proxyip-bulk-count" class="proxyip-bulk-count">0 selected</span>
+
+            <div class="proxyip-bulk-actions">
+              <button type="button" id="proxyip-bulk-copy-xray" class="icon-btn" disabled>
+                <svg class="copy-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span>Copy Xray</span>
+              </button>
+
+              <button type="button" id="proxyip-bulk-copy-sb" class="icon-btn" disabled>
+                <svg class="copy-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span>Copy Singbox</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="proxyip-list" class="proxyip-list">
+            <div class="proxyip-empty">Loading ProxyIPs…</div>
+          </div>
+        </div>
       </div>
 
       <div class="config-card fragment-builder">
@@ -1760,35 +2278,56 @@
     <script>
       function copyToClipboard(button, text) {
         const originalHTML = button.innerHTML;
-        navigator.clipboard.writeText(text).then(() => {
-          button.innerHTML = `
+        navigator.clipboard
+          .writeText(text)
+          .then(() => {
+            button.innerHTML = `
       <svg class="copy-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M20 6L9 17l-5-5"></path>
       </svg>
     `;
-          button.classList.add("copied");
-          button.disabled = true;
-          setTimeout(() => {
-            button.innerHTML = originalHTML;
-            button.classList.remove("copied");
-            button.disabled = false;
-          }, 1200);
-        }).catch((err) => {
-          console.error("Failed to copy text: ", err);
-          const originalHTMLError = button.innerHTML;
-          button.innerHTML = `
+            button.classList.add("copied");
+            button.disabled = true;
+            setTimeout(() => {
+              button.innerHTML = originalHTML;
+              button.classList.remove("copied");
+              button.disabled = false;
+            }, 1200);
+          })
+          .catch((err) => {
+            console.error("Failed to copy text: ", err);
+            const originalHTMLError = button.innerHTML;
+            button.innerHTML = `
       <svg class="copy-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M18 6L6 18M6 6l12 12"></path>
       </svg>
     `;
-          button.classList.add("error");
-          button.disabled = true;
+            button.classList.add("error");
+            button.disabled = true;
+            setTimeout(() => {
+              button.innerHTML = originalHTMLError;
+              button.classList.remove("error");
+              button.disabled = false;
+            }, 1500);
+          });
+      }
+
+      function flashFeedback(el, success) {
+        if (!el.dataset.flashing) {
+          el.dataset.flashing = "1";
+          const originalHTML = el.innerHTML;
+          el.innerHTML = `
+      <svg class="copy-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="${success ? "M20 6L9 17l-5-5" : "M18 6L6 18M6 6l12 12"}"></path>
+      </svg>
+    `;
+          el.classList.add(success ? "copied" : "error");
           setTimeout(() => {
-            button.innerHTML = originalHTMLError;
-            button.classList.remove("error");
-            button.disabled = false;
-          }, 1500);
-        });
+            el.innerHTML = originalHTML;
+            el.classList.remove("copied", "error");
+            delete el.dataset.flashing;
+          }, 1200);
+        }
       }
 
       function updateIpApiIoDisplay(geo, prefix, originalHost) {
@@ -1812,21 +2351,23 @@
           const city = geo.city || "";
           const countryName = geo.country_name || "";
           const countryCode = geo.country_code ? geo.country_code.toLowerCase() : "";
-          let flagElementHtml = countryCode ?
-            `<img src="https://flagcdn.com/w20/${countryCode}.png" srcset="https://flagcdn.com/w40/${countryCode}.png 2x" alt="${geo.country_code}" class="country-flag"> ` :
-            "";
+          let flagElementHtml = countryCode
+            ? `<img src="https://flagcdn.com/w20/${countryCode}.png" srcset="https://flagcdn.com/w40/${countryCode}.png 2x" alt="${geo.country_code}" class="country-flag"> `
+            : "";
           let textPart = [city, countryName].filter(Boolean).join(", ");
-          elements.location.innerHTML = flagElementHtml || textPart ? `${flagElementHtml}${textPart}`.trim() : "N/A";
+          elements.location.innerHTML =
+            flagElementHtml || textPart ? `${flagElementHtml}${textPart}`.trim() : "N/A";
         }
-        if (elements.isp) elements.isp.textContent = geo.isp || geo.organization || geo.org || "N/A";
+        if (elements.isp)
+          elements.isp.textContent = geo.isp || geo.organization || geo.org || "N/A";
       }
-      async function fetchIpApiIoInfo(ip) {
+      async function fetchProxyHostInfo(host) {
         try {
-          const response = await fetch(`https://ipapi.co/${ip}/json/`);
+          const response = await fetch(`/proxy-host-info?host=${encodeURIComponent(host)}`);
           if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
           return await response.json();
         } catch (error) {
-          console.error("IP API Error (ipapi.co):", error);
+          console.error("Proxy host info error:", error);
           return null;
         }
       }
@@ -1839,8 +2380,14 @@
           return "badge-yes";
         }
         const normalized = (risk || "").toString().toLowerCase();
-        if (normalized.includes("very high") || normalized.includes("critical") || normalized.includes("high")) return "badge-no";
-        if (normalized.includes("medium") || normalized.includes("moderate")) return "badge-warning";
+        if (
+          normalized.includes("very high") ||
+          normalized.includes("critical") ||
+          normalized.includes("high")
+        )
+          return "badge-no";
+        if (normalized.includes("medium") || normalized.includes("moderate"))
+          return "badge-warning";
         if (normalized.includes("low")) return "badge-yes";
         return "badge-neutral";
       }
@@ -1857,28 +2404,38 @@
         if (elements.isp) elements.isp.textContent = data.isp || "N/A";
         if (elements.location) {
           const countryCode = data.country ? data.country.toLowerCase() : "";
-          const flagElementHtml = (countryCode && countryCode !== "n/a") ?
-            `<img src="https://flagcdn.com/w20/${countryCode}.png" srcset="https://flagcdn.com/w40/${countryCode}.png 2x" alt="${data.country}" class="country-flag"> ` :
-            "";
+          const flagElementHtml =
+            countryCode && countryCode !== "n/a"
+              ? `<img src="https://flagcdn.com/w20/${countryCode}.png" srcset="https://flagcdn.com/w40/${countryCode}.png 2x" alt="${data.country}" class="country-flag"> `
+              : "";
           const textPart = [data.city, data.country].filter(Boolean).join(", ");
-          elements.location.innerHTML = flagElementHtml || textPart ? `${flagElementHtml}${textPart}`.trim() : "N/A";
+          elements.location.innerHTML =
+            flagElementHtml || textPart ? `${flagElementHtml}${textPart}`.trim() : "N/A";
         }
         if (elements.proxy) {
           const score = data.threatScore;
           const risk = data.risk || "";
           const badgeClass = getRiskBadgeClass(risk, score);
-          elements.proxy.innerHTML = `<span class="badge ${badgeClass}">${score} - ${risk} Risk</span>`;
+          elements.proxy.innerHTML =
+            score === null || score === undefined
+              ? `<span class="badge badge-neutral">N/A</span>`
+              : `<span class="badge ${badgeClass}">${score} - ${risk} Risk</span>`;
         }
       }
 
       function showError(prefix, message = "Could not load data", originalHostForProxy = null) {
         const errorMessage = "N/A";
-        const elements = prefix === "proxy" ? ["host", "ip", "location", "isp"] : ["ip", "location", "isp", "proxy"];
+        const elements =
+          prefix === "proxy"
+            ? ["host", "ip", "location", "isp"]
+            : ["ip", "location", "isp", "proxy"];
         elements.forEach((key) => {
           const el = document.getElementById(`${prefix}-${key}`);
           if (!el) return;
-          if (key === "host" && prefix === "proxy") el.textContent = originalHostForProxy || errorMessage;
-          else if (key === "proxy" && prefix === "client") el.innerHTML = `<span class="badge badge-neutral">N/A</span>`;
+          if (key === "host" && prefix === "proxy")
+            el.textContent = originalHostForProxy || errorMessage;
+          else if (key === "proxy" && prefix === "client")
+            el.innerHTML = `<span class="badge badge-neutral">N/A</span>`;
           else el.innerHTML = errorMessage;
         });
         console.warn(`${prefix} data loading failed: ${message}`);
@@ -1890,19 +2447,7 @@
           const proxyHostEl = document.getElementById("proxy-host");
           if (proxyHostEl) proxyHostEl.textContent = proxyIpWithPort;
           if (proxyDomainOrIp && proxyDomainOrIp !== "N/A") {
-            let resolvedProxyIp = proxyDomainOrIp;
-            if (!/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(proxyDomainOrIp)) {
-              try {
-                const dnsRes = await fetch(`/resolve-domain?domain=${encodeURIComponent(proxyDomainOrIp)}`);
-                if (dnsRes.ok) {
-                  const dnsData = await dnsRes.json();
-                  if (dnsData.ip) resolvedProxyIp = dnsData.ip;
-                }
-              } catch (e) {
-                console.error("DNS resolution for proxy failed:", e);
-              }
-            }
-            const proxyGeoData = await fetchIpApiIoInfo(resolvedProxyIp);
+            const proxyGeoData = await fetchProxyHostInfo(proxyDomainOrIp);
             updateIpApiIoDisplay(proxyGeoData, "proxy", proxyIpWithPort);
           } else {
             showError("proxy", "Proxy Host not available", proxyIpWithPort);
@@ -1921,7 +2466,11 @@
           }
         } catch (error) {
           console.error("Overall network info loading failed:", error);
-          showError("proxy", `Error: ${error.message}`, document.body.getAttribute("data-proxy-ip") || "N/A");
+          showError(
+            "proxy",
+            `Error: ${error.message}`,
+            document.body.getAttribute("data-proxy-ip") || "N/A",
+          );
           showError("client", `Error: ${error.message}`);
         }
       }
@@ -1933,6 +2482,298 @@
         return `vless://${userID}@${newHost}:${newPort}${queryString}#${encodeURIComponent(newName)}`;
       }
 
+      function makeClientConfigName(baseLink, tag) {
+        const securityMatch = baseLink.match(/[?&]security=([^&#]+)/);
+        const proto = securityMatch && securityMatch[1] !== "none" ? "tls" : "tcp";
+        return `${tag}-${proto.toUpperCase()}`;
+      }
+
+      function withPathOverride(rawLink, overrides = {}) {
+        const match = rawLink.match(/^(vless:\/\/[^?#]+)(\?[^#]*)?(#.*)?$/);
+        if (!match) return rawLink;
+        const [, prefix, query = "", hash = ""] = match;
+        const params = new URLSearchParams(query.startsWith("?") ? query.slice(1) : query);
+        const rawPath = params.get("path") || "/";
+        const [pathPart, pathQuery = ""] = rawPath.split("?");
+        const pathParams = new URLSearchParams(pathQuery);
+        Object.entries(overrides).forEach(([key, value]) => {
+          if (value === undefined || value === null) return;
+          pathParams.set(key, value);
+        });
+        const pathQs = pathParams.toString();
+        params.set("path", pathQs ? `${pathPart}?${pathQs}` : pathPart);
+        return `${prefix}?${params.toString()}${hash}`;
+      }
+
+      function initNat64Card() {
+        const toggle = document.getElementById("nat64-toggle");
+        const serverBadge = document.getElementById("nat64-server-badge");
+        const configBadge = document.getElementById("nat64-config-badge");
+        const copyBtn = document.getElementById("nat64-copy-btn");
+        if (!toggle || !serverBadge || !configBadge || !copyBtn) return;
+        const defaultOn = toggle.dataset.default !== "off";
+        toggle.checked = defaultOn;
+        const renderBadge = (el, on) => {
+          el.textContent = on ? "Enabled" : "Disabled";
+          el.className = `badge ${on ? "badge-yes" : "badge-no"}`;
+        };
+        renderBadge(serverBadge, defaultOn);
+        let activeConfigs = { normal: "", enhanced: "" };
+        const sync = () => {
+          renderBadge(configBadge, toggle.checked);
+          activeConfigs = toggle.checked
+            ? { normal: copyBtn.dataset.nat64OnNormal, enhanced: copyBtn.dataset.nat64OnEnhanced }
+            : { normal: copyBtn.dataset.nat64OffNormal, enhanced: copyBtn.dataset.nat64OffEnhanced };
+        };
+        sync();
+        toggle.addEventListener("change", sync);
+        copyBtn.addEventListener("click", () => {
+          openXrayChoiceModal((enhanced) => {
+            const configs = enhanced ? activeConfigs.enhanced : activeConfigs.normal;
+            if (!configs) return;
+            copyToClipboard(copyBtn, configs);
+          }, `Select the config type you want to copy for this NAT64 setting (currently ${toggle.checked ? "On" : "Off"}) ${XRAY_CHOICE_MODAL_TEXT_PATTNG}`);
+        });
+      }
+
+      function proxyRiskBadgeClass(score) {
+        const n = Number(score);
+        if (Number.isNaN(n)) return "badge-neutral";
+        if (n >= 75) return "badge-no";
+        if (n >= 40) return "badge-warning";
+        return "badge-yes";
+      }
+
+      function countryFlagEmoji(countryCode) {
+        if (!countryCode || countryCode.length !== 2) return "";
+        const points = [...countryCode.toUpperCase()].map((c) => 0x1f1e6 + (c.charCodeAt(0) - 65));
+        if (points.some((p) => p < 0x1f1e6 || p > 0x1f1ff)) return "";
+        return String.fromCodePoint(...points);
+      }
+
+      function renderProxyHostGroup(hostGroup, counter) {
+        const div = document.createElement("div");
+        div.className = "proxyip-item";
+        const optionsHtml = hostGroup.entries
+          .map((entry, i) => {
+            const badgeClass = proxyRiskBadgeClass(entry.score);
+            const selected = i === 0;
+            const xrayCfg = entry.configs.find((c) => c.label === "Xray");
+            const sbCfg = entry.configs.find((c) => c.label === "Singbox");
+            const xrayNormalLink = entry.xrayNormalLink ?? "";
+            const configButtons = entry.configs
+              .map((cfgItem) =>
+                cfgItem.label === "Xray"
+                  ? `
+                  <button type="button" class="icon-btn" data-proxyip-link-normal="${encodeURIComponent(xrayNormalLink)}" data-proxyip-link-enhanced="${encodeURIComponent(cfgItem.link)}" aria-label="Copy ${escapeHtml(cfgItem.label)} config for ${escapeHtml(entry.ip)}">
+                    <svg class="copy-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <span>${escapeHtml(cfgItem.label)}</span>
+                  </button>
+                `
+                  : `
+                  <button type="button" class="icon-btn" data-proxyip-link="${encodeURIComponent(cfgItem.link)}" aria-label="Copy ${escapeHtml(cfgItem.label)} config for ${escapeHtml(entry.ip)}">
+                    <svg class="copy-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <span>${escapeHtml(cfgItem.label)}</span>
+                  </button>
+                `,
+              )
+              .join("");
+            counter.n += 1;
+            return `
+              <div class="proxyip-ip-option${selected ? " selected" : ""}">
+                <label class="proxyip-ip-toggle">
+                  <input type="checkbox" class="proxyip-select"${selected ? " checked" : ""} data-xray-link="${encodeURIComponent(xrayNormalLink)}" data-xray-enhanced-link="${encodeURIComponent(xrayCfg?.link ?? "")}" data-sb-link="${encodeURIComponent(sbCfg?.link ?? "")}" aria-label="Select ${escapeHtml(entry.ip)} - shows its config and marks it for bulk copy">
+                  <span class="proxyip-index">${counter.n}</span>
+                  <span class="proxyip-ip-addr">${escapeHtml(entry.ip)}</span>
+                  <span class="badge ${badgeClass}">${escapeHtml(entry.score ?? "?")} - ${escapeHtml(entry.risk || "Unknown")}</span>
+                </label>
+                <div class="proxyip-ip-configs">${configButtons}</div>
+              </div>
+            `;
+          })
+          .join("");
+        div.innerHTML = `
+          <div class="proxyip-item-head">
+            <span class="proxyip-item-host">${escapeHtml(hostGroup.host)}</span>
+          </div>
+          <div class="proxyip-ip-options">${optionsHtml}</div>
+        `;
+        return div;
+      }
+
+      function renderProxyIpCountry(groups, countryName) {
+        const list = document.getElementById("proxyip-list");
+        if (!list) return;
+        const group = groups.find((g) => g.country === countryName);
+        if (!group || !group.hosts.length) {
+          list.innerHTML = `<div class="proxyip-empty">No ProxyIPs found for this country.</div>`;
+          updateProxyBulkBar();
+          return;
+        }
+        list.innerHTML = "";
+        const counter = {
+          n: 0,
+        };
+        group.hosts.forEach((hostGroup) =>
+          list.appendChild(renderProxyHostGroup(hostGroup, counter)),
+        );
+        updateProxyBulkBar();
+      }
+
+      function updateProxyBulkBar() {
+        const list = document.getElementById("proxyip-list");
+        const countEl = document.getElementById("proxyip-bulk-count");
+        const xrayBtn = document.getElementById("proxyip-bulk-copy-xray");
+        const sbBtn = document.getElementById("proxyip-bulk-copy-sb");
+        const checked = list ? list.querySelectorAll(".proxyip-select:checked").length : 0;
+        if (countEl) countEl.textContent = `${checked} selected`;
+        if (xrayBtn) xrayBtn.disabled = checked === 0;
+        if (sbBtn) sbBtn.disabled = checked === 0;
+      }
+
+      let v2rayngChoiceHandler = null;
+
+      const XRAY_CHOICE_MODAL_TEXT_PATTNG =
+        'OR <a href="https://github.com/patterniha/v2rayNG" target="_blank" rel="noopener noreferrer">PattNG</a>.';
+
+      function openXrayChoiceModal(onChoice, description) {
+        const modal = document.getElementById("v2rayng-choice-modal");
+        if (!modal) return;
+        const textEl = modal.querySelector(".modal-text");
+        if (textEl && description) textEl.innerHTML = description;
+        v2rayngChoiceHandler = onChoice;
+        modal.style.display = "flex";
+        setTimeout(() => modal.classList.add("visible"), 10);
+      }
+
+      function openProxyIpXrayChoiceModal(bulkCopyXrayBtn) {
+        openXrayChoiceModal(
+          (enhanced) =>
+            copySelectedProxyConfigs(
+              bulkCopyXrayBtn,
+              enhanced ? "data-xray-enhanced-link" : "data-xray-link",
+            ),
+          `Select the config type you want to copy for the selected ProxyIP(s) ${XRAY_CHOICE_MODAL_TEXT_PATTNG}`,
+        );
+      }
+
+      function copySelectedProxyConfigs(button, attr) {
+        const list = document.getElementById("proxyip-list");
+        if (!list) return;
+        const links = [...list.querySelectorAll(".proxyip-select:checked")]
+          .map((cb) => cb.getAttribute(attr))
+          .filter(Boolean)
+          .map((encoded) => decodeURIComponent(encoded));
+        if (!links.length) return;
+        copyToClipboard(button, links.join("\n"));
+      }
+
+      function renderProxyCountryButtons(groups, activeCountry, onSelect) {
+        const bar = document.getElementById("proxyip-country-buttons");
+        if (!bar) return;
+        const byNameLength = [...groups].sort((a, b) => a.country.length - b.country.length);
+        bar.innerHTML = byNameLength
+          .map((g) => {
+            const flag = g.flag || countryFlagEmoji(g.countryCode) || "🏳️";
+            const riskHint =
+              g.lowestScore != null
+                ? `${escapeHtml(g.lowestScore)} - ${escapeHtml(g.lowestRisk)}`
+                : "no score";
+            return `
+              <button type="button" class="proxyip-country-btn${g.country === activeCountry ? " active" : ""}" data-country="${escapeHtml(g.country)}" title="${escapeHtml(g.country)}">
+                <span class="flag">${flag}</span>
+                <span class="country-name">${escapeHtml(g.country)}</span>
+                <span class="risk-hint">${riskHint}</span>
+              </button>
+            `;
+          })
+          .join("");
+        bar.querySelectorAll("[data-country]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            bar
+              .querySelectorAll(".proxyip-country-btn")
+              .forEach((b) => b.classList.toggle("active", b === btn));
+            onSelect(btn.getAttribute("data-country"));
+          });
+        });
+      }
+      async function initProxyIpCard() {
+        const card = document.getElementById("proxyip-card");
+        const bar = document.getElementById("proxyip-country-buttons");
+        const list = document.getElementById("proxyip-list");
+        const refreshBtn = document.getElementById("proxyip-refresh");
+        if (!card || !bar || !list) return;
+        const url = card.getAttribute("data-url");
+        if (!url) return;
+        list.addEventListener("click", (e) => {
+          const xrayBtn = e.target.closest("[data-proxyip-link-normal]");
+          if (xrayBtn) {
+            openXrayChoiceModal((enhanced) => {
+              const attr = enhanced ? "data-proxyip-link-enhanced" : "data-proxyip-link-normal";
+              const link = decodeURIComponent(xrayBtn.getAttribute(attr) || "");
+              if (!link) return;
+              copyToClipboard(xrayBtn, link);
+            }, `Select the config type you want to copy for this ProxyIP ${XRAY_CHOICE_MODAL_TEXT_PATTNG}`);
+            return;
+          }
+          const btn = e.target.closest("[data-proxyip-link]");
+          if (!btn) return;
+          const link = decodeURIComponent(btn.getAttribute("data-proxyip-link"));
+          copyToClipboard(btn, link);
+        });
+        list.addEventListener("change", (e) => {
+          if (!e.target.classList.contains("proxyip-select")) return;
+          const option = e.target.closest(".proxyip-ip-option");
+          if (option) option.classList.toggle("selected", e.target.checked);
+          updateProxyBulkBar();
+        });
+        const bulkCopyXrayBtn = document.getElementById("proxyip-bulk-copy-xray");
+        const bulkCopySbBtn = document.getElementById("proxyip-bulk-copy-sb");
+        bulkCopyXrayBtn?.addEventListener("click", () => openProxyIpXrayChoiceModal(bulkCopyXrayBtn));
+        bulkCopySbBtn?.addEventListener("click", () =>
+          copySelectedProxyConfigs(bulkCopySbBtn, "data-sb-link"),
+        );
+        const load = async (forceRefresh = false) => {
+          list.innerHTML = `<div class="proxyip-empty">Loading ProxyIPs…</div>`;
+          bar.innerHTML = "";
+          const icon = refreshBtn?.querySelector(".refresh-icon");
+          if (refreshBtn) refreshBtn.disabled = true;
+          if (icon) icon.style.animation = "spin 1s linear infinite";
+          try {
+            const fetchUrl = forceRefresh ? `${url}${url.includes("?") ? "&" : "?"}refresh=1` : url;
+            const res = await fetch(fetchUrl);
+            if (!res.ok) throw new Error("Request failed");
+            const data = await res.json();
+            const groups = (data.groups || []).filter((g) => g.hosts && g.hosts.length);
+            if (!groups.length) {
+              list.innerHTML = `<div class="proxyip-empty">No ProxyIPs available right now.</div>`;
+              return;
+            }
+            const initialCountry = groups[0].country;
+            renderProxyCountryButtons(groups, initialCountry, (country) =>
+              renderProxyIpCountry(groups, country),
+            );
+            renderProxyIpCountry(groups, initialCountry);
+          } catch (e) {
+            console.error("ProxyIPs load failed:", e);
+            list.innerHTML = `<div class="proxyip-empty">Could not load ProxyIPs. Try refreshing.</div>`;
+          } finally {
+            setTimeout(() => {
+              if (refreshBtn) refreshBtn.disabled = false;
+              if (icon) icon.style.animation = "";
+            }, 1000);
+          }
+        };
+        refreshBtn?.addEventListener("click", () => load(true));
+        await load();
+      }
+
       function formatConfigForDisplay(rawLink, maxParamLen = 60) {
         const match = rawLink.match(/^(vless:\/\/[^?#]+)(\?[^#]*)?(#.*)?$/);
         if (!match) return rawLink;
@@ -1940,7 +2781,8 @@
         const params = new URLSearchParams(query.startsWith("?") ? query.slice(1) : query);
         const parts = [];
         for (const [key, value] of params.entries()) {
-          const displayValue = value.length > maxParamLen ? value.slice(0, maxParamLen) + "…" : value;
+          const displayValue =
+            value.length > maxParamLen ? value.slice(0, maxParamLen) + "…" : value;
           parts.push(`${key}=${displayValue}`);
         }
         const decodedHash = hash ? "#" + decodeURIComponent(hash.slice(1)) : "";
@@ -1948,7 +2790,8 @@
       }
       const PATTNG_PRESETS = {
         default: {
-          tcp: [{
+          tcp: [
+            {
               type: "fragment",
               settings: {
                 packets: "tlshello",
@@ -1969,7 +2812,8 @@
           ],
         },
         aggressive: {
-          tcp: [{
+          tcp: [
+            {
               type: "fragment",
               settings: {
                 packets: "tlshello",
@@ -2197,647 +3041,4 @@
       }
 
       function processCustomCleanIPs(savedIps) {
-        const card = document.getElementById("custom-config-card");
-        const pre = document.getElementById("custom-configs-pre");
-        if (!card || !pre) return;
-        const lines = savedIps.split('\n').map(line => line.trim()).filter(line => line !== "");
-        const xrayBase = document.getElementById("xray-config")?.textContent || "";
-        const sbBase = document.getElementById("pattng-config")?.dataset.raw || "";
-        let customConfigs = [];
-        lines.forEach((ip, index) => {
-          let host = ip;
-          let port = "443";
-          if (ip.includes(':') && !ip.startsWith('[')) {
-            const parts = ip.split(':');
-            host = parts[0];
-            port = parts[1];
-          } else if (ip.startsWith('[') && ip.includes(']:')) {
-            const parts = ip.split(']:');
-            host = parts[0] + ']';
-            port = parts[1];
-          }
-          try {
-            const xrFinal = rebuildVlessLink(xrayBase, host, port, `Clean-${index + 1}-Xray`);
-            customConfigs.push(xrFinal);
-            const sbFinal = rebuildVlessLink(sbBase, host, port, `Clean-${index + 1}-Singbox`);
-            customConfigs.push(sbFinal);
-          } catch (e) {
-            console.error("Link generation failed for custom route:", e);
-          }
-        });
-        if (customConfigs.length > 0) {
-          const outputText = customConfigs.join('\n');
-          pre.textContent = outputText;
-          card.style.display = 'block';
-          document.getElementById('btn-copy-custom').onclick = function() {
-            copyToClipboard(this, outputText);
-          };
-        } else {
-          card.style.display = 'none';
-        }
-      }
-
-      function attemptV2rayNgLaunch(url) {
-        try {
-          window.location.href = url;
-        } catch (e) {
-          console.error("location.href launch failed:", e);
-        }
-        setTimeout(() => {
-          try {
-            const anchor = document.createElement("a");
-            anchor.href = url;
-            anchor.style.display = "none";
-            document.body.appendChild(anchor);
-            anchor.click();
-            document.body.removeChild(anchor);
-          } catch (e) {
-            console.error("hidden anchor launch failed:", e);
-          }
-        }, 250);
-        setTimeout(() => {
-          try {
-            window.open(url, "_self");
-          } catch (e) {
-            console.error("window.open launch failed:", e);
-          }
-        }, 500);
-      }
-
-      function extractSubscriptionUrl(rawUrl) {
-        const idx = rawUrl.indexOf("url=");
-        if (idx === -1) return rawUrl;
-        return rawUrl.slice(idx + 4);
-      }
-
-      function attachLongPress(el, {
-        onTap,
-        onLongPress,
-        duration = 400
-      }) {
-        let timer = null;
-        let didLongPress = false;
-        let startX = 0;
-        let startY = 0;
-        const clear = () => {
-          if (timer) clearTimeout(timer);
-          timer = null;
-        };
-        const start = (x, y) => {
-          didLongPress = false;
-          startX = x;
-          startY = y;
-          timer = setTimeout(() => {
-            didLongPress = true;
-            onLongPress();
-          }, duration);
-        };
-        const move = (x, y) => {
-          if (!timer) return;
-          if (Math.abs(x - startX) > 10 || Math.abs(y - startY) > 10) clear();
-        };
-        el.addEventListener("touchstart", (e) => {
-          const t = e.touches[0];
-          start(t.clientX, t.clientY);
-        }, {
-          passive: true
-        });
-        el.addEventListener("touchmove", (e) => {
-          const t = e.touches[0];
-          move(t.clientX, t.clientY);
-        }, {
-          passive: true
-        });
-        el.addEventListener("touchend", () => clear());
-        el.addEventListener("touchcancel", () => clear());
-        el.addEventListener("mousedown", (e) => start(e.clientX, e.clientY));
-        el.addEventListener("mousemove", (e) => move(e.clientX, e.clientY));
-        el.addEventListener("mouseup", () => clear());
-        el.addEventListener("mouseleave", () => clear());
-        el.addEventListener("click", (e) => {
-          if (didLongPress) {
-            e.preventDefault();
-            didLongPress = false;
-            return;
-          }
-          onTap(e);
-        });
-      }
-      document.getElementById("refresh-ip-info")?.addEventListener("click", function() {
-        const button = this;
-        const icon = button.querySelector(".refresh-icon");
-        button.disabled = true;
-        if (icon) icon.style.animation = "spin 1s linear infinite";
-        const resetToSkeleton = (prefix) => {
-          const elementsToReset = ["ip", "location", "isp"];
-          if (prefix === "proxy") elementsToReset.push("host");
-          if (prefix === "client") elementsToReset.push("proxy");
-          elementsToReset.forEach((key) => {
-            const element = document.getElementById(`${prefix}-${key}`);
-            if (element) element.innerHTML = `<span class="skeleton" style="width: 120px;"></span>`;
-          });
-        };
-        resetToSkeleton("proxy");
-        resetToSkeleton("client");
-        loadNetworkInfo().finally(() =>
-          setTimeout(() => {
-            button.disabled = false;
-            if (icon) icon.style.animation = "";
-          }, 1000),
-        );
-      });
-      document.addEventListener("DOMContentLoaded", () => {
-        const yearEl = document.getElementById("current-year");
-        if (yearEl) yearEl.textContent = new Date().getFullYear();
-        loadNetworkInfo();
-        const savedIps = localStorage.getItem("custom_clean_ips");
-        if (savedIps) {
-          document.getElementById("custom-ips-input").value = savedIps;
-          processCustomCleanIPs(savedIps);
-        }
-        const hiddifyBtn = document.getElementById("hiddify-import-btn");
-        const modal = document.getElementById("hiddify-dns-modal");
-        const continueBtn = document.getElementById("hiddify-modal-continue");
-        const v2rayngModal = document.getElementById("v2rayng-choice-modal");
-        const v2rayngNormalBtn = document.getElementById("v2rayng-choice-normal");
-        const v2rayngEnhancedBtn = document.getElementById("v2rayng-choice-enhanced");
-        const v2rayngImportBtn = document.getElementById("v2rayng-import-btn");
-        const closeV2rayngModal = () => {
-          v2rayngModal.classList.remove("visible");
-          setTimeout(() => (v2rayngModal.style.display = "none"), 300);
-        };
-        if (v2rayngModal && v2rayngNormalBtn && v2rayngEnhancedBtn && v2rayngImportBtn) {
-          v2rayngNormalBtn.addEventListener("click", () => {
-            closeV2rayngModal();
-            attemptV2rayNgLaunch(v2rayngImportBtn.getAttribute("data-copy-url"));
-          });
-          v2rayngEnhancedBtn.addEventListener("click", () => {
-            closeV2rayngModal();
-            attemptV2rayNgLaunch(v2rayngImportBtn.getAttribute("data-copy-url-enhanced"));
-          });
-          v2rayngModal.addEventListener("click", (event) => {
-            if (event.target === v2rayngModal) closeV2rayngModal();
-          });
-        }
-        const pattngPre = document.getElementById("pattng-config");
-        let originalPattngRaw = null;
-        if (pattngPre) {
-          originalPattngRaw = pattngPre.textContent.trim();
-          pattngPre.dataset.raw = originalPattngRaw;
-          pattngState = clonePattngState(PATTNG_PRESETS.default);
-          renderFragmentChain();
-          updatePattngPreview(originalPattngRaw, pattngPre);
-        }
-        document.querySelectorAll(".fragment-preset").forEach((button) => {
-          button.addEventListener("click", () => {
-            const preset = button.dataset.preset;
-            document.querySelectorAll(".fragment-preset").forEach((item) => {
-              item.classList.toggle("active", item === button);
-            });
-            if (preset === "custom") {
-              return;
-            }
-            setFragmentPreset(preset, originalPattngRaw, pattngPre);
-          });
-        });
-        document.querySelectorAll(".fragment-view-btn").forEach((button) => {
-          button.addEventListener("click", () => {
-            const preview = document.getElementById("fragment-preview");
-            if (!preview) return;
-            document.querySelectorAll(".fragment-view-btn").forEach((item) => {
-              item.classList.toggle("active", item === button);
-            });
-            preview.classList.toggle("json-mode", button.dataset.view === "json");
-          });
-        });
-        document.getElementById("fragment-add-btn")?.addEventListener("click", () => {
-          pattngState.tcp.push({
-            type: "fragment",
-            settings: {
-              packets: "1-1",
-              lengths: ["1"],
-              delays: ["1"],
-              maxSplit: "1",
-            },
-          });
-          refreshPattng(originalPattngRaw, pattngPre);
-        });
-        document.getElementById("fragment-chain")?.addEventListener("input", (event) => {
-          const target = event.target;
-          const index = Number(target.dataset.fragmentIndex);
-          const field = target.dataset.field;
-          if (!Number.isInteger(index) || !field || !pattngState.tcp[index]) return;
-          pattngState.tcp[index].settings[field] = target.value;
-          updatePattngPreview(originalPattngRaw, pattngPre);
-        });
-        document.getElementById("fragment-chain")?.addEventListener("click", (event) => {
-          const target = event.target.closest("button");
-          if (!target) return;
-          const chain = pattngState.tcp;
-          const removeFragment = target.dataset.removeFragment;
-          const moveUp = target.dataset.moveUp;
-          const moveDown = target.dataset.moveDown;
-          const addValue = target.hasAttribute("data-add-value");
-          const removeValue = target.dataset.removeValue;
-          if (removeFragment !== undefined) {
-            const index = Number(removeFragment);
-            if (chain.length > 1) {
-              chain.splice(index, 1);
-              refreshPattng(originalPattngRaw, pattngPre);
-            }
-            return;
-          }
-          if (moveUp !== undefined) {
-            const index = Number(moveUp);
-            if (index > 0) {
-              [chain[index - 1], chain[index]] = [chain[index], chain[index - 1]];
-              refreshPattng(originalPattngRaw, pattngPre);
-            }
-            return;
-          }
-          if (moveDown !== undefined) {
-            const index = Number(moveDown);
-            if (index < chain.length - 1) {
-              [chain[index], chain[index + 1]] = [chain[index + 1], chain[index]];
-              refreshPattng(originalPattngRaw, pattngPre);
-            }
-            return;
-          }
-          const valuesContainer = target.closest(".fragment-values");
-          if (!valuesContainer) return;
-          const index = Number(valuesContainer.dataset.index);
-          const key = valuesContainer.dataset.key;
-          if (!Number.isInteger(index) || !chain[index]) return;
-          if (addValue) {
-            chain[index].settings[key].push("1");
-            refreshPattng(originalPattngRaw, pattngPre);
-            return;
-          }
-          if (removeValue !== undefined) {
-            const valueIndex = Number(removeValue);
-            chain[index].settings[key].splice(valueIndex, 1);
-            if (chain[index].settings[key].length === 0) {
-              chain[index].settings[key].push("0");
-            }
-            refreshPattng(originalPattngRaw, pattngPre);
-          }
-        });
-        document.getElementById("fingerprint-select")?.addEventListener("change", () => {
-          updatePattngPreview(originalPattngRaw, pattngPre);
-        });
-        document.getElementById("fragment-reset-btn")?.addEventListener("click", () => {
-          pattngState = clonePattngState(PATTNG_PRESETS.default);
-          document.getElementById("fingerprint-select").value = "unsafe";
-          document.querySelectorAll(".fragment-preset").forEach((button) => {
-            button.classList.toggle("active", button.dataset.preset === "default");
-          });
-          refreshPattng(originalPattngRaw, pattngPre);
-        });
-        document.getElementById("copy-pattng-btn")?.addEventListener("click", function() {
-          copyToClipboard(this, pattngPre?.dataset.raw || "");
-        });
-        document.querySelectorAll(".client-btn[data-copy-url]").forEach((el) => {
-          attachLongPress(el, {
-            onTap: (e) => {
-              if (el.id === "hiddify-import-btn" && modal && continueBtn) {
-                e.preventDefault();
-                modal.style.display = "flex";
-                setTimeout(() => modal.classList.add("visible"), 10);
-                return;
-              }
-              if (el.id === "v2rayng-import-btn") {
-                e.preventDefault();
-                v2rayngModal.style.display = "flex";
-                setTimeout(() => v2rayngModal.classList.add("visible"), 10);
-              }
-            },
-            onLongPress: () => {
-              const rawUrl = el.getAttribute("data-copy-url");
-              const url = extractSubscriptionUrl(rawUrl);
-              navigator.clipboard.writeText(url).then(() => {
-                flashFeedback(el, true);
-              }).catch((err) => {
-                console.error("Failed to copy link:", err);
-                flashFeedback(el, false);
-              });
-            },
-          });
-        });
-        if (hiddifyBtn && modal && continueBtn) {
-          continueBtn.addEventListener("click", function() {
-            modal.classList.remove("visible");
-            setTimeout(() => {
-              modal.style.display = "none";
-              window.location.href = hiddifyBtn.href;
-            }, 300);
-          });
-          modal.addEventListener("click", function(event) {
-            if (event.target === modal) {
-              modal.classList.remove("visible");
-              setTimeout(() => (modal.style.display = "none"), 300);
-            }
-          });
-        }
-        const customTrigger = document.getElementById("open-custom-ips");
-        const customModal = document.getElementById("custom-ips-modal");
-        const customSave = document.getElementById("custom-ips-save");
-        const customCancel = document.getElementById("custom-ips-cancel");
-        const customInput = document.getElementById("custom-ips-input");
-        if (customTrigger && customModal && customSave && customCancel) {
-          const openModal = () => {
-            customModal.style.display = "flex";
-            setTimeout(() => customModal.classList.add("visible"), 10);
-          };
-          customTrigger.addEventListener("click", openModal);
-          customTrigger.addEventListener("keydown", (e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              openModal();
-            }
-          });
-          const closeModal = () => {
-            customModal.classList.remove("visible");
-            setTimeout(() => {
-              customModal.style.display = "none";
-            }, 300);
-          };
-          customCancel.addEventListener("click", closeModal);
-          customModal.addEventListener("click", (e) => {
-            if (e.target === customModal) closeModal();
-          });
-          customSave.addEventListener("click", () => {
-            const value = customInput.value;
-            localStorage.setItem("custom_clean_ips", value);
-            processCustomCleanIPs(value);
-            closeModal();
-            if (value.trim().length > 0) {
-              document.getElementById("custom-config-card").scrollIntoView({
-                behavior: 'smooth'
-              });
-            }
-          });
-        }
-      });
-      document.addEventListener('DOMContentLoaded', () => {
-        const subLinks = document.querySelectorAll('a[href*="install-config"], a[href*="subscription"]');
-        subLinks.forEach(link => {
-          const href = link.getAttribute('href');
-          let rawSubUrl = href;
-          if (href.includes('url=')) {
-            const urlParam = href.match(/[?&]url=([^&]+)/);
-            if (urlParam) {
-              rawSubUrl = decodeURIComponent(urlParam[1]);
-            }
-          }
-          link.setAttribute('data-raw-url', rawSubUrl);
-          attachLongPress(link, {
-            onTap: () => {},
-            onLongPress: () => {
-              navigator.clipboard.writeText(rawSubUrl).then(() => {
-                const toast = document.createElement('div');
-                toast.textContent = 'Subscription URL copied!';
-                toast.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 20px;border-radius:5px;z-index:9999;';
-                document.body.appendChild(toast);
-                setTimeout(() => toast.remove(), 2000);
-              }).catch(err => console.error('Copy failed:', err));
-            },
-          });
-          link.addEventListener('contextmenu', (e) => {
-            navigator.clipboard.writeText(rawSubUrl).catch(err => console.error('Copy failed:', err));
-          });
-        });
-      });
-      document.addEventListener("DOMContentLoaded", () => {
-        const card = document.getElementById("proxy-pool-card");
-        if (!card) return;
-        const countriesElement = document.getElementById("proxy-pool-countries");
-        const searchInput = document.getElementById("proxy-pool-search");
-        const totalElement = document.getElementById("proxy-pool-total");
-        const selectedElement = document.getElementById("proxy-pool-selected");
-        const generateButton = document.getElementById("proxy-pool-generate");
-        const clearButton = document.getElementById("proxy-pool-clear");
-        const statusElement = document.getElementById("proxy-pool-status");
-        const outputElement = document.getElementById("proxy-pool-output");
-        const selected = new Map();
-        const countryNames = new Intl.DisplayNames(["en"], {
-          type: "region"
-        });
-        let countryData = [];
-        let generating = false;
-        const escapeHTML = (value) =>
-          String(value).replace(/[&<>"']/g, (char) => ({
-            "&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            '"': "&quot;",
-            "'": "&#39;",
-          })[char]);
-        const countryName = (code) => {
-          try {
-            return countryNames.of(code) || code;
-          } catch {
-            return code;
-          }
-        };
-        const countryFlag = (code) =>
-          /^[A-Z]{2}$/.test(code) ?
-          String.fromCodePoint(...[...code].map((char) => 127397 + char.charCodeAt(0))) :
-          "";
-        const proxyKey = (proxy) => `${proxy.ip}:${proxy.port}`;
-
-        function updateSelectionUI() {
-          selectedElement.textContent = `${selected.size} selected`;
-          generateButton.disabled = generating || selected.size === 0;
-          clearButton.disabled = generating || selected.size === 0;
-          card.querySelectorAll('input[data-proxy]').forEach((input) => {
-            const checked = selected.has(input.dataset.proxy);
-            input.checked = checked;
-            input.disabled = generating || (!checked && selected.size >= 10);
-          });
-        }
-
-        function renderCountries() {
-          const query = searchInput.value.trim().toLowerCase();
-          const filtered = countryData.filter(({
-              code
-            }) =>
-            countryName(code).toLowerCase().includes(query) ||
-            code.toLowerCase().includes(query)
-          );
-          if (!filtered.length) {
-            countriesElement.innerHTML =
-              '<p class="proxy-pool-muted">No matching countries found.</p>';
-            return;
-          }
-          countriesElement.innerHTML = filtered.map(({
-            code,
-            count
-          }) => `
-      <details class="proxy-pool-country" data-country="${escapeHTML(code)}">
-        <summary>
-          <span class="country-name">${escapeHTML(countryName(code))}</span>
-          <span>${countryFlag(code)}</span>
-          <span class="proxy-pool-count">${count} IPs</span>
-        </summary>
-        <div class="proxy-pool-list">
-          <p class="proxy-pool-muted">Loading proxies...</p>
-        </div>
-      </details>
-    `).join("");
-          countriesElement.querySelectorAll("details[data-country]").forEach((details) => {
-            details.addEventListener("toggle", async () => {
-              if (!details.open || details.dataset.loaded === "true") return;
-              const list = details.querySelector(".proxy-pool-list");
-              const code = details.dataset.country;
-              try {
-                const response = await fetch(
-                  `/proxyip-pool?country=${encodeURIComponent(code)}`
-                );
-                const data = await response.json();
-                if (!response.ok) {
-                  throw new Error(data.error || "Unable to load proxies");
-                }
-                list.innerHTML = data.proxies.map((proxy) => {
-                  const key = proxyKey(proxy);
-                  const checked = selected.has(key);
-                  return `
-              <div class="proxy-pool-proxy">
-                <input
-                  type="checkbox"
-                  id="proxy-${escapeHTML(code)}-${escapeHTML(proxy.ip)}-${proxy.port}"
-                  data-proxy="${escapeHTML(key)}"
-                  ${checked ? "checked" : ""}
-                  ${!checked && selected.size >= 10 ? "disabled" : ""}
-                />
-                <label for="proxy-${escapeHTML(code)}-${escapeHTML(proxy.ip)}-${proxy.port}">
-                  ${escapeHTML(key)}
-                  <span class="proxy-pool-meta">
-                    ${escapeHTML(proxy.isp)}
-                    ${proxy.city ? ` · ${escapeHTML(proxy.city)}` : ""}
-                    ${proxy.risk ? ` · Risk: ${escapeHTML(proxy.risk)}` : ""}
-                  </span>
-                </label>
-              </div>
-            `;
-                }).join("") || '<p class="proxy-pool-muted">No proxies available.</p>';
-                details.dataset.loaded = "true";
-                updateSelectionUI();
-              } catch (error) {
-                list.textContent = error.message || "Unable to load proxies.";
-              }
-            });
-          });
-        }
-        countriesElement.addEventListener("change", (event) => {
-          const input = event.target.closest("input[data-proxy]");
-          if (!input || generating) return;
-          const key = input.dataset.proxy;
-          if (input.checked) {
-            if (selected.size >= 10) {
-              input.checked = false;
-              statusElement.textContent = "You can select up to 10 ProxyIPs.";
-              return;
-            }
-            selected.set(key, key);
-          } else {
-            selected.delete(key);
-          }
-          statusElement.textContent = "";
-          updateSelectionUI();
-        });
-        searchInput.addEventListener("input", renderCountries);
-        clearButton.addEventListener("click", () => {
-          selected.clear();
-          outputElement.replaceChildren();
-          statusElement.textContent = "";
-          updateSelectionUI();
-        });
-        generateButton.addEventListener("click", async () => {
-          if (generating || selected.size === 0) return;
-          generating = true;
-          outputElement.replaceChildren();
-          statusElement.textContent = "Generating configurations...";
-          updateSelectionUI();
-          try {
-            const response = await fetch("/proxyip-configs", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                selected: [...selected.keys()]
-              }),
-            });
-            const data = await response.json();
-            if (!response.ok) {
-              throw new Error(data.error || "Configuration generation failed");
-            }
-            data.configs.forEach((item, index) => {
-              const result = document.createElement("div");
-              result.className = "proxy-pool-result";
-              const title = document.createElement("div");
-              title.className = "proxy-pool-result-title";
-              title.textContent =
-                `${countryFlag(item.country)} ${countryName(item.country)} · ${item.proxyIP}`;
-              const pre = document.createElement("pre");
-              pre.textContent = item.config;
-              const copyButton = document.createElement("button");
-              copyButton.type = "button";
-              copyButton.className = "button";
-              copyButton.textContent = "Copy Config";
-              copyButton.addEventListener("click", async () => {
-                try {
-                  await navigator.clipboard.writeText(item.config);
-                  copyButton.textContent = "Copied";
-                  setTimeout(() => {
-                    copyButton.textContent = "Copy Config";
-                  }, 1500);
-                } catch {
-                  statusElement.textContent = "Clipboard access failed. Select and copy the configuration manually.";
-                }
-              });
-              result.append(title, pre, copyButton);
-              outputElement.appendChild(result);
-            });
-            statusElement.textContent =
-              `${data.count} separate configuration(s) generated.`;
-            outputElement.scrollIntoView({
-              behavior: "smooth",
-              block: "nearest"
-            });
-          } catch (error) {
-            statusElement.textContent =
-              error.message || "Unable to generate configurations.";
-          } finally {
-            generating = false;
-            updateSelectionUI();
-          }
-        });
-        async function loadCountryList() {
-          try {
-            const response = await fetch("/proxyip-pool");
-            const data = await response.json();
-            if (!response.ok) {
-              throw new Error(data.error || "Unable to load ProxyIP dataset");
-            }
-            countryData = data.countries || [];
-            totalElement.textContent = `${data.total || 0} IPs`;
-            if (data.updated_at) {
-              statusElement.textContent =
-                `Dataset updated: ${new Date(data.updated_at).toLocaleString()}`;
-            }
-            renderCountries();
-            updateSelectionUI();
-          } catch (error) {
-            countriesElement.textContent =
-              "ProxyIP dataset is temporarily unavailable.";
-            statusElement.textContent =
-              error.message || "Unable to load ProxyIP dataset.";
-          }
-        }
-        loadCountryList();
-      });
-    </script>
-  </body>
-
-</html>
+        const card =
