@@ -234,10 +234,13 @@ jobs:
         with:
           node-version: "20"
 
+      - name: Install wrangler
+        run: npm install -g wrangler@4
+
       - name: Dry-run deploy → inspect bundled artifacts
         id: dryrun
         run: |
-          npx wrangler deploy --dry-run --outdir=./dist-check
+          wrangler deploy --dry-run --outdir=./dist-check
           echo "----- dist-check contents -----"
           ls -la ./dist-check
           echo "----- JSON metadata (if any) -----"
@@ -247,7 +250,6 @@ jobs:
           echo "----- search for specific wasm hash (with line numbers) -----"
           grep -n "543a4508db37c509b5a1d800d4a331cff1cba4c8" dist-check/index.js || echo "(hash not found)"
           echo "----- 3 lines of context around each match of the hash -----"
-          # Automatically show ±3 lines of context for every occurrence
           grep -n -B3 -A3 "543a4508db37c509b5a1d800d4a331cff1cba4c8" dist-check/index.js || echo "(no context available)"
 
       - name: "Deploy via Wrangler Action (${{ steps.worker.outputs.name }} → ${{ steps.account.outputs.label }})"
