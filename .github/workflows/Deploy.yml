@@ -252,6 +252,75 @@ jobs:
           echo "----- 3 lines of context around each match of the hash -----"
           grep -n -B3 -A3 "543a4508db37c509b5a1d800d4a331cff1cba4c8" dist-check/index.js || echo "(no context available)"
 
+      - name: "Isolation test — direct REST API upload (bypass wrangler)"
+        id: curltest
+        if: matrix.index == 1
+        env:
+          API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          TEST_WORKER_NAME: curltest-isolate
+          TEST_UUID: ${{ steps.uuidval.outputs.uuid }}
+          TEST_PROXYIP: ${{ steps.proxyval.outputs.proxyip }}
+        run: |
+          WASM_FILE=$(ls ./dist-check/*.wasm)
+          WASM_NAME=$(basename "$WASM_FILE")
+
+          cat > /tmp/metadata.json <<EOF
+          {
+            "main_module": "index.js",
+            "bindings": [
+              { "type": "plain_text", "name": "UUID", "text": "${TEST_UUID}" },
+              { "type": "plain_text", "name": "PROXYIP", "text": "${TEST_PROXYIP}" },
+              { "type": "plain_text", "name": "WORKERNAME", "text": "${TEST_WORKER_NAME}" }
+            ],
+            "compatibility_date": "2025-09-01"
+          }
+          EOF
+
+          UPLOAD_RESPONSE=$(curl -sS -X PUT \
+            "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/workers/scripts/${TEST_WORKER_NAME}" \
+            -H "Authorization: Bearer ${API_TOKEN}" \
+            -F "metadata=@/tmp/metadata.json;type=application/json" \
+            -F "index.js=@./dist-check/index.js;type=application/javascript+module" \
+            -F "${WASM_NAME}=@${WASM_FILE};type=application/wasm")
+
+          echo "$UPLOAD_RESPONSE" | jq .
+          echo "upload_ok=$(echo "$UPLOAD_RESPONSE" | jq -r '.success')" >> "$GITHUB_OUTPUT"
+
+          curl -sS -X POST \
+            "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/workers/scripts/${TEST_WORKER_NAME}/subdomain" \
+            -H "Authorization: Bearer ${API_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d '{"enabled": true}' | jq .
+
+          SUBDOMAIN=$(curl -sS "https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/workers/subdomain" \
+            -H "Authorization: Bearer ${API_TOKEN}" | jq -r '.result.subdomain')
+          TEST_URL="https://${TEST_WORKER_NAME}.${SUBDOMAIN}.workers.dev"
+          echo "test_url=$TEST_URL" >> "$GITHUB_OUTPUT"
+
+          sleep 8
+
+          ROOT_STATUS=$(curl -sS -o /tmp/root_body.html -w "%{http_code}" "$TEST_URL/")
+          UUID_STATUS=$(curl -sS -o /tmp/uuid_body.html -w "%{http_code}" "$TEST_URL/${TEST_UUID}")
+          echo "root_status=$ROOT_STATUS" >> "$GITHUB_OUTPUT"
+          echo "uuid_status=$UUID_STATUS" >> "$GITHUB_OUTPUT"
+
+      - name: Isolation test summary
+        if: matrix.index == 1
+        run: |
+          {
+            echo "## 🧪 Direct REST API upload isolation test"
+            echo ""
+            echo "| **Check** | **Result** |"
+            echo "|:----------|:-----------|"
+            echo "| Upload success | \`${{ steps.curltest.outputs.upload_ok }}\` |"
+            echo "| Test URL | ${{ steps.curltest.outputs.test_url }} |"
+            echo "| Root path (/) status | \`${{ steps.curltest.outputs.root_status }}\` |"
+            echo "| UUID path status | \`${{ steps.curltest.outputs.uuid_status }}\` |"
+            echo ""
+            echo "A 1101 page is rendered by Cloudflare's edge for an uncaught Worker exception. Open the Test URL above on your phone to see it directly — the status code alone may not be conclusive."
+          } >> "$GITHUB_STEP_SUMMARY"
+
       - name: "Deploy via Wrangler Action (${{ steps.worker.outputs.name }} → ${{ steps.account.outputs.label }})"
         id: deploy
         uses: cloudflare/wrangler-action@v4
