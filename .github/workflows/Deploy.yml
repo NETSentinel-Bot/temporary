@@ -244,8 +244,11 @@ jobs:
           cat ./dist-check/*.json 2>/dev/null || echo "(no .json files produced by wrangler)"
           echo "----- lines containing 'wasm' in index.js -----"
           grep -n "wasm" dist-check/index.js | head -20 || echo "(no matches or index.js missing)"
-          echo "----- search for specific wasm hash -----"
-          grep -o "543a4508db37c509b5a1d800d4a331cff1cba4c8[^\"'\`]*" dist-check/index.js | head -5 || echo "(hash not found in index.js)"
+          echo "----- search for specific wasm hash (with line numbers) -----"
+          grep -n "543a4508db37c509b5a1d800d4a331cff1cba4c8" dist-check/index.js || echo "(hash not found)"
+          echo "----- 3 lines of context around each match of the hash -----"
+          # Automatically show ±3 lines of context for every occurrence
+          grep -n -B3 -A3 "543a4508db37c509b5a1d800d4a331cff1cba4c8" dist-check/index.js || echo "(no context available)"
 
       - name: "Deploy via Wrangler Action (${{ steps.worker.outputs.name }} → ${{ steps.account.outputs.label }})"
         id: deploy
