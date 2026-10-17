@@ -3041,4 +3041,485 @@
       }
 
       function processCustomCleanIPs(savedIps) {
-        const card =
+        const card = document.getElementById("custom-config-card");
+        const pre = document.getElementById("custom-configs-pre");
+        if (!card || !pre) return;
+        const lines = savedIps
+          .split("\n")
+          .map((line) => line.trim())
+          .filter((line) => line !== "");
+        const xrayBase = document.getElementById("xray-config")?.textContent || "";
+        let customConfigs = [];
+        lines.forEach((ip, index) => {
+          let host = ip;
+          let port = "443";
+          if (ip.includes(":") && !ip.startsWith("[")) {
+            const parts = ip.split(":");
+            host = parts[0];
+            port = parts[1];
+          } else if (ip.startsWith("[") && ip.includes("]:")) {
+            const parts = ip.split("]:");
+            host = parts[0] + "]";
+            port = parts[1];
+          }
+          try {
+            const xrFinal = rebuildVlessLink(
+              xrayBase,
+              host,
+              port,
+              makeClientConfigName(xrayBase, `Clean${index + 1}-Xray`),
+            );
+            customConfigs.push(xrFinal);
+          } catch (e) {
+            console.error("Link generation failed for custom route:", e);
+          }
+        });
+        if (customConfigs.length > 0) {
+          const outputText = customConfigs.join("\n");
+          pre.textContent = outputText;
+          card.style.display = "block";
+          document.getElementById("btn-copy-custom").onclick = function () {
+            copyToClipboard(this, outputText);
+          };
+        } else {
+          card.style.display = "none";
+        }
+      }
+
+      function attemptV2rayNgLaunch(url) {
+        try {
+          window.location.href = url;
+        } catch (e) {
+          console.error("location.href launch failed:", e);
+        }
+        setTimeout(() => {
+          try {
+            const anchor = document.createElement("a");
+            anchor.href = url;
+            anchor.style.display = "none";
+            document.body.appendChild(anchor);
+            anchor.click();
+            document.body.removeChild(anchor);
+          } catch (e) {
+            console.error("hidden anchor launch failed:", e);
+          }
+        }, 250);
+        setTimeout(() => {
+          try {
+            window.open(url, "_self");
+          } catch (e) {
+            console.error("window.open launch failed:", e);
+          }
+        }, 500);
+      }
+
+      function extractSubscriptionUrl(rawUrl) {
+        const idx = rawUrl.indexOf("url=");
+        if (idx === -1) return rawUrl;
+        return rawUrl.slice(idx + 4);
+      }
+
+      function attachLongPress(el, { onTap, onLongPress, duration = 400 }) {
+        let timer = null;
+        let didLongPress = false;
+        let startX = 0;
+        let startY = 0;
+        const clear = () => {
+          if (timer) clearTimeout(timer);
+          timer = null;
+        };
+        const start = (x, y) => {
+          didLongPress = false;
+          startX = x;
+          startY = y;
+          timer = setTimeout(() => {
+            didLongPress = true;
+            onLongPress();
+          }, duration);
+        };
+        const move = (x, y) => {
+          if (!timer) return;
+          if (Math.abs(x - startX) > 10 || Math.abs(y - startY) > 10) clear();
+        };
+        el.addEventListener(
+          "touchstart",
+          (e) => {
+            const t = e.touches[0];
+            start(t.clientX, t.clientY);
+          },
+          {
+            passive: true,
+          },
+        );
+        el.addEventListener(
+          "touchmove",
+          (e) => {
+            const t = e.touches[0];
+            move(t.clientX, t.clientY);
+          },
+          {
+            passive: true,
+          },
+        );
+        el.addEventListener("touchend", () => clear());
+        el.addEventListener("touchcancel", () => clear());
+        el.addEventListener("mousedown", (e) => start(e.clientX, e.clientY));
+        el.addEventListener("mousemove", (e) => move(e.clientX, e.clientY));
+        el.addEventListener("mouseup", () => clear());
+        el.addEventListener("mouseleave", () => clear());
+        el.addEventListener("click", (e) => {
+          if (didLongPress) {
+            e.preventDefault();
+            didLongPress = false;
+            return;
+          }
+          onTap(e);
+        });
+      }
+      
+      function showCopyToast(messages = ["Copied!"], duration = 1800) {
+        const text = Array.isArray(messages) ? messages.join(" · ") : String(messages);
+      
+        let toast = document.getElementById("copy-toast");
+        if (!toast) {
+          toast = document.createElement("div");
+          toast.id = "copy-toast";
+          Object.assign(toast.style, {
+            position: "fixed",
+            left: "50%",
+            bottom: "24px",
+            transform: "translateX(-50%) translateY(12px)",
+            padding: "8px 14px",
+            borderRadius: "8px",
+            background: "var(--bgColor-overlay, #1c2128)",
+            color: "var(--fgColor-default, #e6edf3)",
+            border: "1px solid var(--borderColor-default, #3d444d)",
+            boxShadow: "var(--shadow-overlay, 0 8px 24px rgba(1,4,9,.4))",
+            font: "500 12px var(--font-sans, system-ui, sans-serif)",
+            zIndex: "2000",
+            opacity: "0",
+            pointerEvents: "none",
+            transition: "opacity 150ms ease, transform 150ms ease",
+            maxWidth: "calc(100% - 32px)",
+            textAlign: "center",
+          });
+          document.body.appendChild(toast);
+        }
+      
+        toast.textContent = text;
+        void toast.offsetWidth;
+        toast.style.opacity = "1";
+        toast.style.transform = "translateX(-50%) translateY(0)";
+      
+        clearTimeout(toast._hideTimer);
+        toast._hideTimer = setTimeout(() => {
+          toast.style.opacity = "0";
+          toast.style.transform = "translateX(-50%) translateY(12px)";
+        }, duration);
+      }
+
+      document.getElementById("refresh-ip-info")?.addEventListener("click", function () {
+        const button = this;
+        const icon = button.querySelector(".refresh-icon");
+        button.disabled = true;
+        if (icon) icon.style.animation = "spin 1s linear infinite";
+        const resetToSkeleton = (prefix) => {
+          const elementsToReset = ["ip", "location", "isp"];
+          if (prefix === "proxy") elementsToReset.push("host");
+          if (prefix === "client") elementsToReset.push("proxy");
+          elementsToReset.forEach((key) => {
+            const element = document.getElementById(`${prefix}-${key}`);
+            if (element) element.innerHTML = `<span class="skeleton" style="width: 120px;"></span>`;
+          });
+        };
+        resetToSkeleton("proxy");
+        resetToSkeleton("client");
+        loadNetworkInfo().finally(() =>
+          setTimeout(() => {
+            button.disabled = false;
+            if (icon) icon.style.animation = "";
+          }, 1000),
+        );
+      });
+      document.addEventListener("DOMContentLoaded", () => {
+        const yearEl = document.getElementById("current-year");
+        if (yearEl) yearEl.textContent = new Date().getFullYear();
+        loadNetworkInfo();
+        initNat64Card();
+        initProxyIpCard();
+        const savedIps = localStorage.getItem("custom_clean_ips");
+        if (savedIps) {
+          document.getElementById("custom-ips-input").value = savedIps;
+          processCustomCleanIPs(savedIps);
+        }
+        const hiddifyBtn = document.getElementById("hiddify-import-btn");
+        const modal = document.getElementById("hiddify-dns-modal");
+        const continueBtn = document.getElementById("hiddify-modal-continue");
+        const v2rayngModal = document.getElementById("v2rayng-choice-modal");
+        const v2rayngNormalBtn = document.getElementById("v2rayng-choice-normal");
+        const v2rayngEnhancedBtn = document.getElementById("v2rayng-choice-enhanced");
+        const v2rayngImportBtn = document.getElementById("v2rayng-import-btn");
+        const closeV2rayngModal = () => {
+          v2rayngModal.classList.remove("visible");
+          setTimeout(() => (v2rayngModal.style.display = "none"), 300);
+        };
+        if (v2rayngModal && v2rayngNormalBtn && v2rayngEnhancedBtn && v2rayngImportBtn) {
+          v2rayngNormalBtn.addEventListener("click", () => {
+            closeV2rayngModal();
+            const handler = v2rayngChoiceHandler;
+            v2rayngChoiceHandler = null;
+            handler?.(false);
+          });
+          v2rayngEnhancedBtn.addEventListener("click", () => {
+            closeV2rayngModal();
+            const handler = v2rayngChoiceHandler;
+            v2rayngChoiceHandler = null;
+            handler?.(true);
+          });
+          v2rayngModal.addEventListener("click", (event) => {
+            if (event.target === v2rayngModal) {
+              v2rayngChoiceHandler = null;
+              closeV2rayngModal();
+            }
+          });
+        }
+        const pattngPre = document.getElementById("pattng-config");
+        let originalPattngRaw = null;
+        if (pattngPre) {
+          originalPattngRaw = pattngPre.textContent.trim();
+          pattngPre.dataset.raw = originalPattngRaw;
+          pattngState = clonePattngState(PATTNG_PRESETS.default);
+          renderFragmentChain();
+          updatePattngPreview(originalPattngRaw, pattngPre);
+        }
+        document.querySelectorAll(".fragment-preset").forEach((button) => {
+          button.addEventListener("click", () => {
+            const preset = button.dataset.preset;
+            document.querySelectorAll(".fragment-preset").forEach((item) => {
+              item.classList.toggle("active", item === button);
+            });
+            if (preset === "custom") {
+              return;
+            }
+            setFragmentPreset(preset, originalPattngRaw, pattngPre);
+          });
+        });
+        document.querySelectorAll(".fragment-view-btn").forEach((button) => {
+          button.addEventListener("click", () => {
+            const preview = document.getElementById("fragment-preview");
+            if (!preview) return;
+            document.querySelectorAll(".fragment-view-btn").forEach((item) => {
+              item.classList.toggle("active", item === button);
+            });
+            preview.classList.toggle("json-mode", button.dataset.view === "json");
+          });
+        });
+        document.getElementById("fragment-add-btn")?.addEventListener("click", () => {
+          pattngState.tcp.push({
+            type: "fragment",
+            settings: {
+              packets: "1-1",
+              lengths: ["1"],
+              delays: ["1"],
+              maxSplit: "1",
+            },
+          });
+          refreshPattng(originalPattngRaw, pattngPre);
+        });
+        document.getElementById("fragment-chain")?.addEventListener("input", (event) => {
+          const target = event.target;
+          const index = Number(target.dataset.fragmentIndex);
+          const field = target.dataset.field;
+          if (!Number.isInteger(index) || !field || !pattngState.tcp[index]) return;
+          pattngState.tcp[index].settings[field] = target.value;
+          updatePattngPreview(originalPattngRaw, pattngPre);
+        });
+        document.getElementById("fragment-chain")?.addEventListener("click", (event) => {
+          const target = event.target.closest("button");
+          if (!target) return;
+          const chain = pattngState.tcp;
+          const removeFragment = target.dataset.removeFragment;
+          const moveUp = target.dataset.moveUp;
+          const moveDown = target.dataset.moveDown;
+          const addValue = target.hasAttribute("data-add-value");
+          const removeValue = target.dataset.removeValue;
+          if (removeFragment !== undefined) {
+            const index = Number(removeFragment);
+            if (chain.length > 1) {
+              chain.splice(index, 1);
+              refreshPattng(originalPattngRaw, pattngPre);
+            }
+            return;
+          }
+          if (moveUp !== undefined) {
+            const index = Number(moveUp);
+            if (index > 0) {
+              [chain[index - 1], chain[index]] = [chain[index], chain[index - 1]];
+              refreshPattng(originalPattngRaw, pattngPre);
+            }
+            return;
+          }
+          if (moveDown !== undefined) {
+            const index = Number(moveDown);
+            if (index < chain.length - 1) {
+              [chain[index], chain[index + 1]] = [chain[index + 1], chain[index]];
+              refreshPattng(originalPattngRaw, pattngPre);
+            }
+            return;
+          }
+          const valuesContainer = target.closest(".fragment-values");
+          if (!valuesContainer) return;
+          const index = Number(valuesContainer.dataset.index);
+          const key = valuesContainer.dataset.key;
+          if (!Number.isInteger(index) || !chain[index]) return;
+          if (addValue) {
+            chain[index].settings[key].push("1");
+            refreshPattng(originalPattngRaw, pattngPre);
+            return;
+          }
+          if (removeValue !== undefined) {
+            const valueIndex = Number(removeValue);
+            chain[index].settings[key].splice(valueIndex, 1);
+            if (chain[index].settings[key].length === 0) {
+              chain[index].settings[key].push("0");
+            }
+            refreshPattng(originalPattngRaw, pattngPre);
+          }
+        });
+        document.getElementById("fingerprint-select")?.addEventListener("change", () => {
+          updatePattngPreview(originalPattngRaw, pattngPre);
+        });
+        document.getElementById("fragment-reset-btn")?.addEventListener("click", () => {
+          pattngState = clonePattngState(PATTNG_PRESETS.default);
+          document.getElementById("fingerprint-select").value = "unsafe";
+          document.querySelectorAll(".fragment-preset").forEach((button) => {
+            button.classList.toggle("active", button.dataset.preset === "default");
+          });
+          refreshPattng(originalPattngRaw, pattngPre);
+        });
+        document.getElementById("copy-pattng-btn")?.addEventListener("click", function () {
+          copyToClipboard(this, pattngPre?.dataset.raw || "");
+        });
+        document.querySelectorAll(".client-btn[data-copy-url]").forEach((el) => {
+          attachLongPress(el, {
+            onTap: (e) => {
+              if (el.id === "hiddify-import-btn" && modal && continueBtn) {
+                e.preventDefault();
+                modal.style.display = "flex";
+                setTimeout(() => modal.classList.add("visible"), 10);
+                return;
+              }
+              if (el.id === "v2rayng-import-btn") {
+                e.preventDefault();
+                openXrayChoiceModal(
+                  (enhanced) =>
+                    attemptV2rayNgLaunch(
+                      v2rayngImportBtn.getAttribute(enhanced ? "data-copy-url-enhanced" : "data-copy-url"),
+                    ),
+                  `Select the subscription type you want to import into v2rayNG ${XRAY_CHOICE_MODAL_TEXT_PATTNG}`,
+                );
+              }
+            },
+            onLongPress: () => {
+              const rawUrl = el.getAttribute("data-copy-url");
+              const url = extractSubscriptionUrl(rawUrl);
+              navigator.clipboard
+                .writeText(url)
+                .then(() => {
+                  flashFeedback(el, true);
+                })
+                .catch((err) => {
+                  console.error("Failed to copy link:", err);
+                  flashFeedback(el, false);
+                });
+            },
+          });
+        });
+        if (hiddifyBtn && modal && continueBtn) {
+          continueBtn.addEventListener("click", function () {
+            modal.classList.remove("visible");
+            setTimeout(() => {
+              modal.style.display = "none";
+              window.location.href = hiddifyBtn.href;
+            }, 300);
+          });
+          modal.addEventListener("click", function (event) {
+            if (event.target === modal) {
+              modal.classList.remove("visible");
+              setTimeout(() => (modal.style.display = "none"), 300);
+            }
+          });
+        }
+        const customTrigger = document.getElementById("open-custom-ips");
+        const customModal = document.getElementById("custom-ips-modal");
+        const customSave = document.getElementById("custom-ips-save");
+        const customCancel = document.getElementById("custom-ips-cancel");
+        const customInput = document.getElementById("custom-ips-input");
+        if (customTrigger && customModal && customSave && customCancel) {
+          const openModal = () => {
+            customModal.style.display = "flex";
+            setTimeout(() => customModal.classList.add("visible"), 10);
+          };
+          customTrigger.addEventListener("click", openModal);
+          customTrigger.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              openModal();
+            }
+          });
+          const closeModal = () => {
+            customModal.classList.remove("visible");
+            setTimeout(() => {
+              customModal.style.display = "none";
+            }, 300);
+          };
+          customCancel.addEventListener("click", closeModal);
+          customModal.addEventListener("click", (e) => {
+            if (e.target === customModal) closeModal();
+          });
+          customSave.addEventListener("click", () => {
+            const value = customInput.value;
+            localStorage.setItem("custom_clean_ips", value);
+            processCustomCleanIPs(value);
+            closeModal();
+            if (value.trim().length > 0) {
+              document.getElementById("custom-config-card").scrollIntoView({
+                behavior: "smooth",
+              });
+            }
+          });
+        }
+      });
+      document.addEventListener("DOMContentLoaded", () => {
+        const subLinks = document.querySelectorAll(
+          'a[href*="install-config"], a[href*="subscription"]',
+        );
+        subLinks.forEach((link) => {
+          const href = link.getAttribute("href");
+          let rawSubUrl = href;
+          if (href.includes("url=")) {
+            const urlParam = href.match(/[?&]url=([^&]+)/);
+            if (urlParam) {
+              rawSubUrl = decodeURIComponent(urlParam[1]);
+            }
+          }
+          link.setAttribute("data-raw-url", rawSubUrl);
+          attachLongPress(link, {
+            onTap: () => {},
+            onLongPress: () => {
+              navigator.clipboard
+                .writeText(rawSubUrl)
+                .then(() => showCopyToast(["Subscription URL copied!"]))
+                .catch((err) => console.error("Copy failed:", err));
+            },
+          });
+          link.addEventListener("contextmenu", (e) => {
+            navigator.clipboard
+              .writeText(rawSubUrl)
+              .catch((err) => console.error("Copy failed:", err));
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
