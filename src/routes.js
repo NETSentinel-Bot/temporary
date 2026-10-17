@@ -17,7 +17,7 @@ import {
   API_HEADERS,
 } from "./core.js";
 
-const panelB64 = "";
+import panelB64 from "./panel.b64";
 
 let panelHtml = null;
 function getPanelHtml() {
@@ -658,5 +658,109 @@ export async function handleProxyIpsInfo(request, cfg, hostName, ctx, env) {
 }
 
 export async function handleConfigPage(userID, hostName, proxyAddress, workerName, nat64 = true) {
-  return new Response("A");
+  const dream = buildLink({
+    core: "xray",
+    proto: "tls",
+    userID,
+    hostName,
+    address: hostName,
+    port: 443,
+    tag: `${hostName}-Xray`,
+  });
+  const freedom = buildLink({
+    core: "sb",
+    proto: "tls",
+    userID,
+    hostName,
+    address: hostName,
+    port: 443,
+    tag: `${hostName}-Singbox`,
+  });
+
+  const pattng = buildLink({
+    core: "xray",
+    proto: "tls",
+    userID,
+    hostName,
+    address: hostName,
+    port: 443,
+    tag: `${hostName}-PTN`,
+    enhanced: true,
+  });
+
+  const nat64On = buildLink({
+    core: "xray",
+    proto: "tls",
+    userID,
+    hostName,
+    address: hostName,
+    port: 443,
+    tag: "NAT64",
+    overrides: { nat64: true },
+  });
+  const nat64Off = buildLink({
+    core: "xray",
+    proto: "tls",
+    userID,
+    hostName,
+    address: hostName,
+    port: 443,
+    tag: "NAT64",
+    overrides: { nat64: false },
+  });
+  const nat64OnEnhanced = buildLink({
+    core: "xray",
+    proto: "tls",
+    userID,
+    hostName,
+    address: hostName,
+    port: 443,
+    tag: "NAT64",
+    enhanced: true,
+    overrides: { nat64: true },
+  });
+  const nat64OffEnhanced = buildLink({
+    core: "xray",
+    proto: "tls",
+    userID,
+    hostName,
+    address: hostName,
+    port: 443,
+    tag: "NAT64",
+    enhanced: true,
+    overrides: { nat64: false },
+  });
+
+  const settingsUrl = buildSettingsUrl(workerName);
+  const workerLabel = hostName.split(".")[0] || "0x00";
+  const encodedSubName = encodeURIComponent(workerLabel);
+  const subXrayUrlH = `https://${hostName}/xray/${userID}?name=${encodedSubName}`;
+  const subXrayUrlV = `https://${hostName}/xray/${userID}#${encodedSubName}`;
+  const subXrayUrlVEnhanced = `https://${hostName}/xray-enhanced/${userID}#${encodedSubName}`;
+  const subClashUrl = `https://${hostName}/clash/${userID}?name=${encodedSubName}`;
+  const subSbUrl = `https://${hostName}/sb/${userID}?name=${encodedSubName}`;
+  const subProxyIpsUrl = `https://${hostName}/proxy-ips/${userID}`;
+
+  const finalHTML = getPanelHtml()
+    .replace(/{{PROXY_ADDRESS}}/g, proxyAddress)
+    .replace(/{{CONFIG_DREAM}}/g, dream)
+    .replace(/{{CONFIG_FREEDOM}}/g, freedom)
+    .replace(/{{CONFIG_PATTNG}}/g, pattng)
+    .replace(/{{NAT64_DEFAULT}}/g, nat64 ? "on" : "off")
+    .replace(/{{CONFIG_NAT64_ON_NORMAL}}/g, nat64On)
+    .replace(/{{CONFIG_NAT64_ON_ENHANCED}}/g, nat64OnEnhanced)
+    .replace(/{{CONFIG_NAT64_OFF_NORMAL}}/g, nat64Off)
+    .replace(/{{CONFIG_NAT64_OFF_ENHANCED}}/g, nat64OffEnhanced)
+    .replace(/{{URL_PROXYIPS}}/g, subProxyIpsUrl)
+    .replace(/{{URL_WORKER_SETTINGS}}/g, settingsUrl)
+    .replace(/{{URL_V2RAYNG_ENHANCED}}/g, `${SENS.v2rayng()}${subXrayUrlVEnhanced}`)
+    .replace(/{{URL_V2RAYNG}}/g, `${SENS.v2rayng()}${subXrayUrlV}`)
+    .replace(/{{URL_CLASH}}/g, `${SENS.clash()}${encodeURIComponent(subClashUrl)}`)
+    .replace(/{{URL_HIDDIFY}}/g, `${SENS.hiddify()}${encodeURIComponent(subXrayUrlH)}`)
+    .replace(
+      /{{URL_EXCLAVE}}/g,
+      `${SENS.exclave()}${encodeURIComponent(subSbUrl)}&name=${encodedSubName}`,
+    );
+
+  return new Response(finalHTML, { headers: { "Content-Type": "text/html; charset=utf-8" } });
 }
