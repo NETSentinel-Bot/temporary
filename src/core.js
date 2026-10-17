@@ -402,10 +402,19 @@ export function buildLink({
   port,
   tag,
   enhanced = false,
+  proxyIP,
   overrides,
 }) {
   const p = CORE_PRESETS[core][proto];
-  const path = overrides ? withConfigOverrides(p.path(), overrides) : p.path();
+  let path = p.path();
+
+  if (proxyIP) {
+    const separator = path.includes("?") ? "&" : "?";
+    path += `${separator}proxyip=${proxyIP}`;
+  } else if (overrides) {
+    path = withConfigOverrides(path, overrides);
+  }
+
   return createVlessLink({
     userID,
     address,

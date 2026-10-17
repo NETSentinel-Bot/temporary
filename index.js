@@ -8,7 +8,8 @@ import {
   handleIpSubscription,
   handleMyConnection,
   handleResolveDomain,
-  handleProxyIpsInfo,
+  handleProxyIpPool,
+  handleProxyIpConfigs,
   handleProxyHostInfo,
 } from "./src/routes.js";
 
@@ -111,10 +112,11 @@ export default {
       }
 
       if (url.pathname === "/resolve-domain") return await handleResolveDomain(request);
+      if (url.pathname === "/proxyip-pool") return await handleProxyIpPool(request, ctx);
+      if (url.pathname === "/proxyip-configs")
+        return await handleProxyIpConfigs(request, cfg.userID, url.hostname, ctx);
       if (url.pathname === "/proxy-host-info") return await handleProxyHostInfo(request, env, ctx);
       if (url.pathname === "/my-connection") return await handleMyConnection(request, env, ctx);
-      if (url.pathname.startsWith(`/proxy-ips/${cfg.userID}`))
-        return await handleProxyIpsInfo(request, cfg, url.hostname, ctx, env);
       if (url.pathname.startsWith(`/xray-enhanced/${cfg.userID}`))
         return await handleIpSubscription(request, "xray", cfg.userID, url.hostname, ctx, true, cfg, env);
       if (url.pathname.startsWith(`/xray/${cfg.userID}`))
