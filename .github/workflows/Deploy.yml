@@ -33,7 +33,7 @@ on:
       proxyip:
         description: "Optional: Enter a specific Proxy IP/host for this run"
         required: false
-        default: di.nscl.ir
+        default: ""
       uuid:
         description: "Optional: Enter a specific UUID for this run (leave blank to generate a random one)"
         required: false
@@ -258,7 +258,7 @@ jobs:
         env:
           API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          TEST_WORKER_NAME: curltest-isolate
+          TEST_WORKER_NAME: curltested
           TEST_UUID: ${{ steps.uuidval.outputs.uuid }}
           TEST_PROXYIP: ${{ steps.proxyval.outputs.proxyip }}
         run: |
