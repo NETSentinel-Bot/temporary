@@ -253,12 +253,12 @@ jobs:
           grep -n -B3 -A3 "543a4508db37c509b5a1d800d4a331cff1cba4c8" dist-check/index.js || echo "(no context available)"
 
       - name: "Isolation test — direct REST API upload (bypass wrangler)"
-        id: curltestt
+        id: curltest
         if: matrix.index == 1
         env:
           API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          TEST_WORKER_NAME: curltest-isolate
+          TEST_WORKER_NAME: curltest-isolateee
           TEST_UUID: ${{ steps.uuidval.outputs.uuid }}
           TEST_PROXYIP: ${{ steps.proxyval.outputs.proxyip }}
         run: |
