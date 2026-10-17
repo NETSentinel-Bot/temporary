@@ -258,7 +258,7 @@ jobs:
         env:
           API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          TEST_WORKER_NAME: curltest-isolateee
+          TEST_WORKER_NAME: curltest-isolate
           TEST_UUID: ${{ steps.uuidval.outputs.uuid }}
           TEST_PROXYIP: ${{ steps.proxyval.outputs.proxyip }}
         run: |
