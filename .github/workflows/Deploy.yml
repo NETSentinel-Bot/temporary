@@ -253,7 +253,7 @@ jobs:
           grep -n -B3 -A3 "543a4508db37c509b5a1d800d4a331cff1cba4c8" dist-check/index.js || echo "(no context available)"
 
       - name: "Isolation test — direct REST API upload (bypass wrangler)"
-        id: curltest
+        id: curltestt
         if: matrix.index == 1
         env:
           API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -327,6 +327,7 @@ jobs:
         with:
           apiToken: ${{ matrix.index == 1 && secrets.CLOUDFLARE_API_TOKEN || secrets[format('CLOUDFLARE_API_TOKEN_{0}', matrix.index)] }}
           accountId: ${{ matrix.index == 1 && secrets.CLOUDFLARE_ACCOUNT_ID || secrets[format('CLOUDFLARE_ACCOUNT_ID_{0}', matrix.index)] }}
+          wranglerVersion: "4.86.0"
           command: deploy --name ${{ steps.worker.outputs.name }}
           vars: |
             UUID
